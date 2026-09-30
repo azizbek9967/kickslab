@@ -1,0 +1,1551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kicks Lab — Drop 003</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0B0B0D;
+    --bg-alt: #141417;
+    --bg-alt-2: #1B1B1F;
+    --line: rgba(244,244,242,0.09);
+    --text: #F4F4F2;
+    --text-muted: #8D8D97;
+    --accent: #2E5EFF;
+    --accent-dim: #1C3FBF;
+    --accent-soft: rgba(46,94,255,0.16);
+    --heading: #FFFFFF;
+    --media-bg: #141417;
+    --media-bg-2: #1B1B1F;
+    --nav-glass: rgba(11,11,13,0.66);
+
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 16px;
+
+    --sp-1: 4px;
+    --sp-2: 8px;
+    --sp-3: 12px;
+    --sp-4: 16px;
+    --sp-6: 24px;
+    --sp-8: 32px;
+    --sp-12: 48px;
+    --sp-16: 64px;
+    --sp-24: 96px;
+
+    --shadow-sm: 0 8px 20px -8px rgba(46,94,255,0.30);
+    --shadow-md: 0 20px 44px -14px rgba(46,94,255,0.38);
+    --shadow-lg: 0 30px 70px -20px rgba(46,94,255,0.45);
+
+    --ease: cubic-bezier(.22,1,.36,1);
+  }
+
+  /* Light mode: page chrome (nav, cards, sidebar, text) switches;
+     photography panels (.hero-graphic, .card-media, .arrival-media)
+     stay on fixed dark tokens (--media-bg/--media-bg-2) in both modes
+     on purpose — a dark "spotlight" backdrop reads as premium product
+     photography whether the page around it is light or dark. */
+  :root[data-theme="light"]{
+    --bg: #F6F5F2;
+    --bg-alt: #FFFFFF;
+    --bg-alt-2: #ECEBE6;
+    --line: rgba(11,11,13,0.10);
+    --text: #3A3A40;
+    --text-muted: #74747C;
+    --heading: #0B0B0D;
+    --nav-glass: rgba(246,245,242,0.72);
+    --shadow-sm: 0 8px 20px -8px rgba(46,94,255,0.20);
+    --shadow-md: 0 20px 44px -14px rgba(46,94,255,0.26);
+    --shadow-lg: 0 30px 70px -20px rgba(46,94,255,0.32);
+  }
+
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  img,svg{display:block; max-width:100%;}
+  a{color:inherit; text-decoration:none;}
+  button{font-family:inherit; cursor:pointer; border:none; background:none; color:inherit;}
+  ul{list-style:none;}
+
+  .display{
+    font-family:'Bebas Neue', 'Inter', sans-serif;
+    letter-spacing:0.01em;
+    line-height:0.92;
+    font-weight:400;
+  }
+
+  .wrap{
+    max-width:1240px;
+    margin:0 auto;
+    padding:0 var(--sp-6);
+  }
+  @media (max-width:640px){
+    .wrap{padding:0 var(--sp-4);}
+  }
+
+  /* Focus visibility */
+  a:focus-visible, button:focus-visible, input:focus-visible{
+    outline:2px solid var(--accent);
+    outline-offset:3px;
+    border-radius:4px;
+  }
+
+  /* ============ NAV ============ */
+  header.nav{
+    position:sticky;
+    top:0;
+    z-index:100;
+    background:transparent;
+    border-bottom:1px solid transparent;
+    transition:background .4s var(--ease), border-color .4s var(--ease), backdrop-filter .4s var(--ease);
+  }
+  header.nav.scrolled{
+    background:rgba(11,11,13,0.66);
+    backdrop-filter:blur(16px) saturate(140%);
+    -webkit-backdrop-filter:blur(16px) saturate(140%);
+    border-bottom:1px solid var(--line);
+  }
+  .nav-inner{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:20px 0;
+  }
+  .logo{
+    font-family:'Bebas Neue', sans-serif;
+    font-size:1.6rem;
+    letter-spacing:0.03em;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .logo .dot{
+    width:9px; height:9px;
+    background:var(--accent);
+    border-radius:2px;
+    display:inline-block;
+    box-shadow:0 0 14px 2px rgba(46,94,255,0.7);
+  }
+  .nav-links{
+    display:flex;
+    gap:var(--sp-8);
+  }
+  .nav-links a{
+    position:relative;
+    font-size:0.94rem;
+    font-weight:500;
+    color:var(--text);
+    padding:6px 0;
+  }
+  .nav-links a::after{
+    content:"";
+    position:absolute;
+    left:0; bottom:0;
+    width:0%;
+    height:2px;
+    background:var(--accent);
+    transition:width .28s var(--ease);
+    border-radius:2px;
+  }
+  .nav-links a:hover::after,
+  .nav-links a:focus-visible::after{ width:100%; }
+  .nav-links a:hover{ color:var(--heading); }
+
+  .nav-actions{
+    display:flex;
+    align-items:center;
+    gap:var(--sp-4);
+  }
+  .icon-btn{
+    position:relative;
+    width:40px; height:40px;
+    display:flex; align-items:center; justify-content:center;
+    border-radius:var(--radius-sm);
+    color:var(--text);
+    transition:background .2s var(--ease), transform .2s var(--ease), color .2s var(--ease);
+  }
+  .icon-btn:hover{
+    background:var(--accent-soft);
+    color:var(--heading);
+    transform:translateY(-1px);
+  }
+  .icon-btn svg{width:19px; height:19px;}
+  .cart-badge{
+    position:absolute;
+    top:2px; right:2px;
+    min-width:16px; height:16px;
+    padding:0 3px;
+    border-radius:8px;
+    background:var(--accent);
+    color:#fff;
+    font-size:0.62rem;
+    font-weight:700;
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:0 0 0 2px var(--bg);
+    transition:transform .3s var(--ease);
+  }
+  .cart-badge.bump{ transform:scale(1.35); }
+
+  .nav-toggle{ display:none; }
+  @media (max-width:860px){
+    .nav-links{ display:none; }
+  }
+
+  /* ============ HERO ============ */
+  .hero{
+    position:relative;
+    padding:var(--sp-24) 0 var(--sp-16);
+    overflow:hidden;
+  }
+  .hero-inner{
+    display:grid;
+    grid-template-columns:1.05fr 0.95fr;
+    align-items:center;
+    gap:var(--sp-12);
+  }
+  @media (max-width:900px){
+    .hero-inner{ grid-template-columns:1fr; }
+    .hero-graphic{ order:-1; height:320px !important; }
+  }
+
+  .kicker{
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    font-size:0.85rem;
+    font-weight:600;
+    color:var(--text-muted);
+    margin-bottom:var(--sp-6);
+    opacity:0;
+    animation:rise .7s var(--ease) forwards;
+    animation-delay:.05s;
+  }
+  .kicker .pulse{
+    width:8px; height:8px;
+    border-radius:50%;
+    background:var(--accent);
+    box-shadow:0 0 0 0 rgba(46,94,255,0.6);
+    animation:pulse 2s infinite;
+  }
+  @keyframes pulse{
+    0%{ box-shadow:0 0 0 0 rgba(46,94,255,0.55); }
+    70%{ box-shadow:0 0 0 8px rgba(46,94,255,0); }
+    100%{ box-shadow:0 0 0 0 rgba(46,94,255,0); }
+  }
+
+  .hero h1{
+    font-size:clamp(3.1rem, 7.2vw, 6.6rem);
+    color:var(--heading);
+    opacity:0;
+    animation:rise .8s var(--ease) forwards;
+    animation-delay:.15s;
+  }
+  .hero p.sub{
+    max-width:46ch;
+    margin-top:var(--sp-6);
+    font-size:1.08rem;
+    color:var(--text-muted);
+    opacity:0;
+    animation:rise .8s var(--ease) forwards;
+    animation-delay:.28s;
+  }
+  .hero-cta{
+    display:flex;
+    align-items:center;
+    gap:var(--sp-6);
+    margin-top:var(--sp-8);
+    opacity:0;
+    animation:rise .8s var(--ease) forwards;
+    animation-delay:.4s;
+  }
+  @keyframes rise{
+    from{ opacity:0; transform:translateY(16px); }
+    to{ opacity:1; transform:translateY(0); }
+  }
+
+  .btn-primary{
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    background:var(--accent);
+    color:#fff;
+    font-weight:600;
+    font-size:1rem;
+    padding:15px 26px;
+    border-radius:var(--radius-sm);
+    box-shadow:var(--shadow-md);
+    transition:transform .25s var(--ease), box-shadow .25s var(--ease), background .25s var(--ease);
+  }
+  .btn-primary:hover{
+    transform:translateY(-3px);
+    box-shadow:var(--shadow-lg);
+    background:#4670ff;
+  }
+  .btn-primary svg{ width:16px; height:16px; transition:transform .25s var(--ease); }
+  .btn-primary:hover svg{ transform:translateX(3px); }
+
+  .btn-ghost{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    color:var(--text);
+    font-weight:600;
+    font-size:0.98rem;
+    padding:15px 8px;
+    border-bottom:1px solid var(--line);
+    transition:border-color .25s var(--ease), color .25s var(--ease), gap .25s var(--ease);
+  }
+  .btn-ghost:hover{
+    border-color:var(--accent);
+    color:var(--heading);
+    gap:12px;
+  }
+
+  .stat-row{
+    display:flex;
+    gap:var(--sp-12);
+    margin-top:var(--sp-16);
+    padding-top:var(--sp-8);
+    border-top:1px solid var(--line);
+    max-width:520px;
+    opacity:0;
+    animation:rise .8s var(--ease) forwards;
+    animation-delay:.5s;
+  }
+  .stat-row div span.num{
+    display:block;
+    font-family:'Bebas Neue', sans-serif;
+    font-size:2rem;
+    color:var(--heading);
+  }
+  .stat-row div span.label{
+    font-size:0.82rem;
+    color:var(--text-muted);
+  }
+
+  /* hero graphic */
+  .hero-graphic{
+    position:relative;
+    height:520px;
+    border-radius:var(--radius-lg);
+    background:
+      radial-gradient(circle at 30% 25%, rgba(46,94,255,0.35), transparent 55%),
+      linear-gradient(150deg, var(--media-bg) 0%, var(--media-bg-2) 100%);
+    border:1px solid var(--line);
+    overflow:hidden;
+    box-shadow:var(--shadow-lg);
+  }
+  .hero-graphic .num-watermark{
+    position:absolute;
+    right:-30px; bottom:-60px;
+    font-family:'Bebas Neue', sans-serif;
+    font-size:19rem;
+    color:rgba(244,244,242,0.045);
+    line-height:1;
+    pointer-events:none;
+    user-select:none;
+  }
+  .hero-graphic .dotgrid{
+    position:absolute;
+    inset:0;
+    background-image:radial-gradient(rgba(244,244,242,0.10) 1px, transparent 1.4px);
+    background-size:16px 16px;
+    mask-image:radial-gradient(circle at 65% 40%, black 0%, transparent 62%);
+    -webkit-mask-image:radial-gradient(circle at 65% 40%, black 0%, transparent 62%);
+  }
+  .hero-graphic .blob{
+    position:absolute;
+    width:280px; height:280px;
+    border-radius:50%;
+    background:var(--accent);
+    filter:blur(90px);
+    opacity:0.55;
+    top:8%;
+    left:12%;
+  }
+  .sole-svg{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+  }
+
+  /* ============ MARQUEE STRIP ============ */
+  .strip{
+    border-top:1px solid var(--line);
+    border-bottom:1px solid var(--line);
+    background:var(--bg-alt);
+    overflow:hidden;
+    white-space:nowrap;
+  }
+  .strip-track{
+    display:inline-flex;
+    align-items:center;
+    gap:56px;
+    padding:16px 0;
+    animation:marquee 26s linear infinite;
+    will-change:transform;
+  }
+  .strip-track span{
+    font-family:'Bebas Neue', sans-serif;
+    font-size:1.15rem;
+    letter-spacing:0.04em;
+    color:var(--text-muted);
+    display:inline-flex;
+    align-items:center;
+    gap:56px;
+  }
+  .strip-track span i{
+    width:5px; height:5px;
+    background:var(--accent);
+    border-radius:50%;
+    display:inline-block;
+  }
+  @keyframes marquee{
+    from{ transform:translateX(0); }
+    to{ transform:translateX(-50%); }
+  }
+  @media (prefers-reduced-motion:reduce){
+    .strip-track{ animation:none; }
+  }
+
+  /* ============ CATEGORY TILES ============ */
+  .section{ padding:var(--sp-24) 0; }
+  .section-head{
+    display:flex;
+    align-items:flex-end;
+    justify-content:space-between;
+    margin-bottom:var(--sp-12);
+    gap:var(--sp-6);
+    flex-wrap:wrap;
+  }
+  .section-head h2{
+    font-size:clamp(2rem,4vw,2.8rem);
+    color:var(--heading);
+  }
+  .section-head p{
+    color:var(--text-muted);
+    max-width:38ch;
+  }
+
+  .tiles{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:var(--sp-6);
+  }
+  @media (max-width:800px){
+    .tiles{ grid-template-columns:1fr; }
+  }
+  .tile{
+    position:relative;
+    height:280px;
+    border-radius:var(--radius-md);
+    background:var(--bg-alt);
+    border:1px solid var(--line);
+    padding:var(--sp-6);
+    display:flex;
+    flex-direction:column;
+    justify-content:flex-end;
+    overflow:hidden;
+    transition:transform .32s var(--ease), box-shadow .32s var(--ease), border-color .32s var(--ease);
+  }
+  .tile::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:radial-gradient(circle at 80% 15%, rgba(46,94,255,0.28), transparent 60%);
+    opacity:0;
+    transition:opacity .32s var(--ease);
+  }
+  .tile:hover{
+    transform:translateY(-6px);
+    box-shadow:var(--shadow-md);
+    border-color:rgba(46,94,255,0.4);
+  }
+  .tile:hover::before{ opacity:1; }
+  .tile h3{
+    font-family:'Bebas Neue', sans-serif;
+    font-size:2.1rem;
+    color:var(--heading);
+    position:relative;
+    z-index:1;
+  }
+  .tile .tile-link{
+    position:relative;
+    z-index:1;
+    margin-top:8px;
+    font-size:0.9rem;
+    color:var(--text-muted);
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    transition:gap .25s var(--ease), color .25s var(--ease);
+  }
+  .tile:hover .tile-link{ color:var(--heading); gap:10px; }
+  .tile .tile-link svg{ width:14px; height:14px; }
+
+  /* ============ PRODUCT GRID ============ */
+  .products{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--sp-6);}
+  @media (max-width:980px){ .products{ grid-template-columns:repeat(2,1fr); } }
+  @media (max-width:560px){ .products{ grid-template-columns:1fr; } }
+
+  .card{
+    background:var(--bg-alt);
+    border:1px solid var(--line);
+    border-radius:var(--radius-md);
+    overflow:hidden;
+    transition:transform .3s var(--ease), box-shadow .3s var(--ease), border-color .3s var(--ease);
+  }
+  .card:hover,.card:focus-within{
+    transform:translateY(-6px);
+    box-shadow:var(--shadow-md);
+    border-color:rgba(46,94,255,0.35);
+  }
+  .card-media{
+    position:relative;
+    height:220px;
+    display:flex;align-items:center;justify-content:center;
+    overflow:hidden;
+    background:radial-gradient(circle at 75% 20%, rgba(46,94,255,0.20), transparent 60%), var(--media-bg-2);
+  }
+  .card-media > svg.shoe{width:82%;transition:transform .4s var(--ease);}
+  .card:hover .card-media > svg.shoe{transform:scale(1.06) rotate(-3deg);}
+
+  .tag{
+    position:absolute;top:12px;left:12px;
+    font-size:0.68rem;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;
+    padding:5px 10px;border-radius:20px;border:1px solid transparent;
+  }
+  .tag.new{background:rgba(46,94,255,0.16);color:#a9bcff;border-color:rgba(46,94,255,0.4);}
+  .tag.sale{background:#F4F4F2;color:#0B0B0D;}
+
+  .save-btn{
+    position:absolute;top:8px;right:8px;
+    width:36px;height:36px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    background:rgba(11,11,13,0.55);
+    backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+    color:#F4F4F2;border:1px solid rgba(244,244,242,0.14);
+    transition:transform .2s var(--ease), background .2s var(--ease), color .2s var(--ease);
+  }
+  .save-btn:hover{transform:scale(1.1);background:rgba(11,11,13,0.8);}
+  .save-btn svg{width:17px;height:17px;fill:transparent;stroke:currentColor;stroke-width:2;transition:fill .2s var(--ease), transform .3s var(--ease);}
+  .save-btn.saved{color:#ff5a7a;}
+  .save-btn.saved svg{fill:currentColor;transform:scale(1.1);}
+
+  .quick-add{
+    position:absolute;left:var(--sp-3);right:var(--sp-3);bottom:var(--sp-3);
+    display:flex;align-items:center;justify-content:center;gap:8px;
+    padding:11px 14px;background:var(--accent);color:#fff;
+    font-weight:600;font-size:0.86rem;border-radius:var(--radius-sm);
+    box-shadow:var(--shadow-sm);
+    opacity:0;transform:translateY(12px);pointer-events:none;
+    transition:opacity .26s var(--ease), transform .26s var(--ease), background .2s var(--ease);
+  }
+  .card:hover .quick-add,.card:focus-within .quick-add{opacity:1;transform:translateY(0);pointer-events:auto;}
+  .quick-add:hover{background:#4670ff;}
+  .quick-add svg{width:14px;height:14px;}
+  @media (hover:none){ .quick-add{opacity:1;transform:none;pointer-events:auto;} }
+
+  .card-body{padding:var(--sp-4) var(--sp-4) var(--sp-6);border-top:1px solid var(--line);}
+  .card-brand{font-size:0.74rem;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);margin-bottom:2px;}
+  .card-link{color:inherit;} .card-link:hover{color:var(--accent);} .card-body h4{font-size:1rem;font-weight:600;color:var(--heading);margin-bottom:2px;}
+  .card-body .model{font-size:0.85rem;color:var(--text-muted);margin-bottom:var(--sp-3);}
+  .card-foot{display:flex;align-items:baseline;gap:8px;}
+  .price{font-weight:700;color:var(--heading);}
+  .price.was{font-weight:500;font-size:0.85rem;color:var(--text-muted);text-decoration:line-through;}
+  .price.now{color:var(--accent);}
+  :root[data-theme="light"] .price.now{color:var(--accent-dim);}
+
+  @media (prefers-reduced-motion:reduce){
+    .card,.card-media > svg.shoe,.quick-add{transition:none;}
+    .card:hover{transform:none;}
+  }
+
+
+  
+  /* ============ OUT OF STOCK (card) ============ */
+  .card.oos .card-media{filter:grayscale(.65) brightness(.72);}
+  .card.oos .card-media svg.shoe{opacity:.85;}
+  .card.oos .tag.oos-tag{background:rgba(141,141,151,0.22);color:#c7c7cf;border-color:rgba(141,141,151,0.4);}
+  .card.oos .quick-add{background:var(--bg-alt-2);color:var(--text-muted);cursor:not-allowed;opacity:1;transform:none;pointer-events:auto;box-shadow:none;}
+  .card.oos .quick-add:hover{background:var(--bg-alt-2);}
+  .card.oos .price{color:var(--text-muted);}
+
+  /* ============ SKELETON LOADING ============ */
+  .skeleton{background:var(--bg-alt);border:1px solid var(--line);border-radius:var(--radius-md);overflow:hidden;}
+  .skeleton .sk-media{height:220px;}
+  .skeleton .sk-media,.skeleton .sk-line{background:linear-gradient(100deg,var(--bg-alt-2) 30%,rgba(141,141,151,0.18) 50%,var(--bg-alt-2) 70%);background-size:200% 100%;animation:shimmer 1.5s ease-in-out infinite;}
+  @keyframes shimmer{0%{background-position:200% 0;}100%{background-position:-200% 0;}}
+  .sk-body{padding:var(--sp-4) var(--sp-4) var(--sp-6);border-top:1px solid var(--line);display:grid;gap:10px;}
+  .sk-line{height:12px;border-radius:6px;}
+  .sk-line.w60{width:60%;} .sk-line.w80{width:80%;} .sk-line.w40{width:40%;margin-top:6px;}
+  @media (prefers-reduced-motion:reduce){.skeleton .sk-media,.skeleton .sk-line{animation:none;}}
+
+  /* ============ SHOP LINKS (nav + tiles) ============
+     Each link jumps to the product grid on this page (#drop) and pre-selects
+     a matching filter chip via the query string, read on load:
+       Men / Women -> ?category=men|women   New -> ?filter=new   Sale -> ?filter=sale */
+  .nav-links a[data-shop]{ position:relative; }
+  .nav-links a[data-shop]::before{
+    content:attr(data-hint);
+    position:absolute; top:calc(100% + 10px); left:50%;
+    transform:translate(-50%,-4px);
+    white-space:nowrap;
+    font-size:0.68rem; font-weight:700; letter-spacing:0.04em; text-transform:uppercase;
+    padding:5px 10px; border-radius:20px;
+    background:var(--accent-soft); color:#a9bcff;
+    border:1px solid rgba(46,94,255,0.4);
+    opacity:0; pointer-events:none;
+    transition:opacity .22s var(--ease), transform .22s var(--ease);
+  }
+  :root[data-theme="light"] .nav-links a[data-shop]::before{ color:var(--accent-dim); }
+  .nav-links a[data-shop]:hover::before,
+  .nav-links a[data-shop]:focus-visible::before{ opacity:1; transform:translate(-50%,0); }
+  .nav-links a .nav-arrow{
+    display:inline-block; width:10px; height:10px; margin-left:5px;
+    vertical-align:-1px; opacity:.45;
+    transition:opacity .2s var(--ease), transform .2s var(--ease);
+  }
+  .nav-links a:hover .nav-arrow{ opacity:1; transform:translate(2px,-2px); color:var(--accent); }
+
+  .tile-chip{
+    position:absolute; top:var(--sp-4); left:var(--sp-4); z-index:1;
+    display:inline-flex; align-items:center; gap:6px;
+    font-size:0.68rem; font-weight:700; letter-spacing:0.05em; text-transform:uppercase;
+    padding:5px 10px; border-radius:20px;
+    background:var(--accent-soft); color:#a9bcff;
+    border:1px solid rgba(46,94,255,0.4);
+  }
+  :root[data-theme="light"] .tile-chip{ color:var(--accent-dim); }
+  .tile-chip i{ width:6px; height:6px; border-radius:50%; background:var(--accent); display:inline-block; }
+
+  /* ============ FILTER BAR ============ */
+  .filter-bar{
+    display:flex; align-items:center; flex-wrap:wrap; gap:var(--sp-2);
+    margin-bottom:var(--sp-6);
+  }
+  .filter-label{ font-size:0.82rem; font-weight:600; color:var(--text-muted); margin-right:var(--sp-2); }
+  .chip{
+    font-size:0.85rem; font-weight:600; padding:8px 16px; border-radius:20px;
+    border:1px solid var(--line); color:var(--text);
+    transition:background .2s var(--ease), border-color .2s var(--ease), color .2s var(--ease), transform .2s var(--ease);
+  }
+  .chip:hover{ border-color:rgba(46,94,255,0.5); transform:translateY(-1px); }
+  .chip[aria-pressed="true"]{ background:var(--accent); border-color:var(--accent); color:#fff; }
+  .filter-count{ margin-left:auto; font-size:0.85rem; color:var(--text-muted); }
+
+  /* ============ EMPTY STATE ============ */
+  .empty-state{
+    grid-column:1 / -1;
+    display:none;
+    flex-direction:column; align-items:center; text-align:center;
+    padding:var(--sp-16) var(--sp-6);
+    border:1.5px dashed rgba(46,94,255,0.4);
+    border-radius:var(--radius-lg);
+    background:
+      radial-gradient(circle at 50% 0%, rgba(46,94,255,0.14), transparent 60%),
+      var(--bg-alt);
+  }
+  .empty-state.show{ display:flex; animation:rise .5s var(--ease) both; }
+  .empty-art{ width:190px; margin-bottom:var(--sp-6); position:relative; }
+  .empty-art .ghost-shoe{ animation:bob 3.2s ease-in-out infinite; }
+  @keyframes bob{ 0%,100%{ transform:translateY(0);} 50%{ transform:translateY(-6px);} }
+  .empty-state h3{
+    font-family:'Bebas Neue', sans-serif; font-weight:400;
+    font-size:clamp(2rem,4vw,2.8rem); line-height:1; color:var(--heading);
+  }
+  .empty-state p{ max-width:42ch; margin-top:var(--sp-3); color:var(--text-muted); }
+  .empty-actions{ display:flex; gap:var(--sp-3); flex-wrap:wrap; justify-content:center; margin-top:var(--sp-6); }
+  @media (prefers-reduced-motion:reduce){ .empty-art .ghost-shoe{ animation:none; } .empty-state.show{ animation:none; } }
+
+  /* ============ NEW ARRIVALS ============ */
+  .arrivals-row{
+    display:grid;
+    grid-template-columns:repeat(4, 1fr);
+    gap:var(--sp-6);
+  }
+  @media (max-width:980px){
+    .arrivals-row{
+      grid-auto-flow:column;
+      grid-auto-columns:78%;
+      grid-template-columns:none;
+      overflow-x:auto;
+      padding-bottom:var(--sp-4);
+      scroll-snap-type:x mandatory;
+    }
+    .arrival-card{ scroll-snap-align:start; }
+  }
+  @media (max-width:560px){
+    .arrivals-row{ grid-auto-columns:86%; }
+  }
+
+  .arrival-card{
+    background:var(--bg-alt);
+    border:1px solid var(--line);
+    border-radius:var(--radius-md);
+    overflow:hidden;
+    transition:transform .3s var(--ease), box-shadow .3s var(--ease), border-color .3s var(--ease);
+  }
+  .arrival-card:hover{
+    transform:translateY(-5px);
+    box-shadow:var(--shadow-md);
+    border-color:rgba(46,94,255,0.35);
+  }
+  .arrival-media{
+    position:relative;
+    height:220px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:
+      radial-gradient(circle at 75% 20%, rgba(46,94,255,0.20), transparent 60%),
+      var(--media-bg-2);
+    overflow:hidden;
+  }
+  .arrival-media svg{
+    width:70%;
+    transition:transform .4s var(--ease);
+  }
+  .arrival-card:hover .arrival-media svg{ transform:scale(1.05); }
+
+  .quick-add{
+    position:absolute;
+    left:var(--sp-3);
+    right:var(--sp-3);
+    bottom:var(--sp-3);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    padding:11px 14px;
+    background:var(--accent);
+    color:#fff;
+    font-weight:600;
+    font-size:0.86rem;
+    border-radius:var(--radius-sm);
+    box-shadow:var(--shadow-sm);
+    opacity:0;
+    transform:translateY(10px);
+    transition:opacity .26s var(--ease), transform .26s var(--ease), background .2s var(--ease);
+    pointer-events:none;
+  }
+  .arrival-card:hover .quick-add,
+  .arrival-card:focus-within .quick-add{
+    opacity:1;
+    transform:translateY(0);
+    pointer-events:auto;
+  }
+  .quick-add:hover{ background:#4670ff; }
+  .quick-add svg{ width:14px; height:14px; }
+
+  .arrival-body{
+    padding:var(--sp-4) var(--sp-4) var(--sp-6);
+    border-top:1px solid var(--line);
+  }
+  .arrival-brand{
+    font-size:0.76rem;
+    font-weight:600;
+    color:var(--text-muted);
+    margin-bottom:2px;
+  }
+  .arrival-body h4{
+    font-size:1rem;
+    font-weight:600;
+    color:var(--heading);
+    margin-bottom:6px;
+  }
+  .arrival-price{ font-weight:700; color:var(--heading); }
+
+  @media (prefers-reduced-motion:reduce){
+    .quick-add{ transition:opacity .001ms; }
+  }
+
+  /* ============ TRUST STRIP ============ */
+  .trust-strip{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:var(--sp-16);
+    flex-wrap:wrap;
+    padding:var(--sp-8) 0;
+    border-top:1px solid var(--line);
+    border-bottom:1px solid var(--line);
+  }
+  .trust-item{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    color:var(--text-muted);
+    font-size:0.88rem;
+    font-weight:500;
+    transition:color .22s var(--ease);
+  }
+  .trust-item:hover{ color:var(--text); }
+  .trust-item svg{
+    width:18px; height:18px;
+    color:var(--accent);
+    flex-shrink:0;
+  }
+  @media (max-width:640px){
+    .trust-strip{ gap:var(--sp-8); }
+  }
+
+  /* ============ CTA BAND ============ */
+  .band{
+    margin:0 var(--sp-6);
+    border-radius:var(--radius-lg);
+    background:linear-gradient(135deg, var(--bg-alt-2), var(--bg-alt));
+    border:1px solid var(--line);
+    padding:var(--sp-16) var(--sp-12);
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:var(--sp-8);
+    box-shadow:var(--shadow-sm);
+    flex-wrap:wrap;
+  }
+  .band h3{
+    font-size:clamp(1.8rem,3.4vw,2.6rem);
+    color:var(--heading);
+    max-width:16ch;
+  }
+  .band p{ color:var(--text-muted); margin-top:8px; max-width:40ch; }
+
+  /* ============ FOOTER ============ */
+  footer{
+    border-top:1px solid var(--line);
+    padding:var(--sp-16) 0 var(--sp-8);
+  }
+  .footer-top{
+    display:grid;
+    grid-template-columns:1.4fr 1fr 1fr 1.2fr;
+    gap:var(--sp-8);
+    padding-bottom:var(--sp-12);
+  }
+  @media (max-width:800px){
+    .footer-top{ grid-template-columns:1fr 1fr; }
+  }
+  .footer-top h5{
+    font-size:0.85rem;
+    color:var(--text-muted);
+    font-weight:600;
+    margin-bottom:var(--sp-4);
+  }
+  .footer-top ul li{ margin-bottom:10px; }
+  .footer-top ul li a{
+    color:var(--text);
+    font-size:0.92rem;
+    position:relative;
+  }
+  .footer-top ul li a:hover{ color:var(--accent); }
+
+  .newsletter{
+    display:flex;
+    margin-top:var(--sp-4);
+    border:1px solid var(--line);
+    border-radius:var(--radius-sm);
+    overflow:hidden;
+    max-width:340px;
+  }
+  .newsletter input{
+    flex:1;
+    background:transparent;
+    border:none;
+    padding:12px 14px;
+    color:var(--text);
+    font-size:0.9rem;
+  }
+  .newsletter input::placeholder{ color:var(--text-muted); }
+  .newsletter button{
+    background:var(--accent);
+    color:#fff;
+    padding:0 18px;
+    font-weight:600;
+    font-size:0.88rem;
+    transition:background .2s var(--ease);
+  }
+  .newsletter button:hover{ background:#4670ff; }
+
+  .footer-bottom{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding-top:var(--sp-6);
+    border-top:1px solid var(--line);
+    color:var(--text-muted);
+    font-size:0.82rem;
+    flex-wrap:wrap;
+    gap:var(--sp-4);
+  }
+  .socials{ display:flex; gap:var(--sp-3); }
+  .socials a{
+    width:32px; height:32px;
+    border:1px solid var(--line);
+    border-radius:var(--radius-sm);
+    display:flex; align-items:center; justify-content:center;
+    transition:border-color .2s var(--ease), color .2s var(--ease), transform .2s var(--ease);
+  }
+  .socials a:hover{ border-color:var(--accent); color:var(--accent); transform:translateY(-2px); }
+  .socials a svg{ width:14px; height:14px; }
+
+  @media (prefers-reduced-motion:reduce){
+    *{ animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important; }
+  }
+</style>
+</head>
+<body>
+
+<header class="nav" id="siteNav">
+  <div class="wrap nav-inner">
+    <a href="#top" class="logo"><span class="dot"></span>KICKS LAB</a>
+    <nav class="nav-links">
+      <!-- Each link opens the Shop page pre-filtered (see SHOP LINKS note in CSS). -->
+      <a href="kicks-lab.html?category=men#drop" data-shop="category:men" data-hint="Shop / Men">Men<svg class="nav-arrow" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M2 8L8 2M3.5 2H8V6.5"/></svg></a>
+      <a href="kicks-lab.html?category=women#drop" data-shop="category:women" data-hint="Shop / Women">Women<svg class="nav-arrow" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M2 8L8 2M3.5 2H8V6.5"/></svg></a>
+      <a href="kicks-lab.html?filter=new#drop" data-shop="filter:new" data-hint="Shop / New">New Drops<svg class="nav-arrow" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M2 8L8 2M3.5 2H8V6.5"/></svg></a>
+      <a href="kicks-lab.html?filter=sale#drop" data-shop="filter:sale" data-hint="Shop / Sale">Sale<svg class="nav-arrow" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M2 8L8 2M3.5 2H8V6.5"/></svg></a>
+    </nav>
+    <div class="nav-actions">
+      <button class="icon-btn" aria-label="Search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      </button>
+      <a href="favorites.html" class="icon-btn" aria-label="Favorites" id="favBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 20.5s-7.5-4.6-9.3-9.4C1.5 7.6 3.6 4.5 6.8 4.5c2 0 3.7 1.1 5.2 3 1.5-1.9 3.2-3 5.2-3 3.2 0 5.3 3.1 4.1 6.6C19.5 15.9 12 20.5 12 20.5z"/></svg>
+        <span class="cart-badge" id="favBadge" hidden>0</span>
+      </a>
+      <a href="cart.html" class="icon-btn" aria-label="Cart" id="cartBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6h15l-1.5 9h-12z"/><path d="M6 6L4 2H2"/><circle cx="9.5" cy="20" r="1.4"/><circle cx="17.5" cy="20" r="1.4"/></svg>
+        <span class="cart-badge" id="cartBadge">3</span>
+      </a>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+  <!-- HERO -->
+  <section class="hero">
+    <div class="wrap hero-inner">
+      <div>
+        <div class="kicker"><span class="pulse"></span>DROP 003 · FRIDAY 9AM</div>
+        <h1 class="display">Nobody's<br>saving you<br>a pair.</h1>
+        <p class="sub">400 pairs land Friday at 9AM. One city, one drop, no restock. Set a reminder or don't — the line starts without you.</p>
+        <div class="hero-cta">
+          <a href="#drop" class="btn-primary">Shop the Drop
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </a>
+          <a href="#" class="btn-ghost">Get the reminder</a>
+        </div>
+        <div class="stat-row">
+          <div><span class="num">400</span><span class="label">pairs, total</span></div>
+          <div><span class="num">1</span><span class="label">city release</span></div>
+          <div><span class="num">0</span><span class="label">restocks, ever</span></div>
+        </div>
+      </div>
+
+      <div class="hero-graphic" aria-hidden="true">
+        <div class="dotgrid"></div>
+        <div class="blob"></div>
+        <div class="num-watermark">03</div>
+        <svg class="sole-svg" viewBox="0 0 400 520" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M110 420 C 90 430, 80 450, 95 470 C 130 500, 260 505, 300 480 C 330 460, 325 430, 300 420 C 320 400, 315 360, 280 345 L 170 300 C 140 288, 120 260, 118 225 C 116 170, 150 120, 210 95 C 235 84, 250 60, 240 40"
+                stroke="#2E5EFF" stroke-width="3" stroke-linecap="round" opacity="0.85"/>
+          <path d="M118 225 C 160 235, 205 232, 240 210" stroke="#2E5EFF" stroke-width="2" opacity="0.5"/>
+          <path d="M150 300 L 300 420" stroke="#F4F4F2" stroke-width="1.4" opacity="0.18"/>
+          <circle cx="240" cy="40" r="6" fill="#2E5EFF"/>
+          <g opacity="0.5">
+            <line x1="140" y1="440" x2="290" y2="440" stroke="#F4F4F2" stroke-width="1"/>
+            <line x1="135" y1="455" x2="295" y2="455" stroke="#F4F4F2" stroke-width="1"/>
+            <line x1="140" y1="470" x2="285" y2="470" stroke="#F4F4F2" stroke-width="1"/>
+          </g>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- MARQUEE STRIP -->
+  <div class="strip" aria-hidden="true">
+    <div class="strip-track">
+      <span>DROP 003 — FRIDAY 9AM <i></i></span>
+      <span>400 PAIRS ONLY <i></i></span>
+      <span>ONE CITY, NO RESTOCK <i></i></span>
+      <span>KICKS LAB <i></i></span>
+      <span>DROP 003 — FRIDAY 9AM <i></i></span>
+      <span>400 PAIRS ONLY <i></i></span>
+      <span>ONE CITY, NO RESTOCK <i></i></span>
+      <span>KICKS LAB <i></i></span>
+    </div>
+  </div>
+
+  <!-- CATEGORY TILES -->
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 class="display">Shop by lane</h2>
+        <p>Three ways in. Pick your side of the drop.</p>
+      </div>
+      <div class="tiles">
+        <!-- Tiles link to /shop pre-filtered by category (not wired yet). -->
+        <a href="kicks-lab.html?category=men#drop" class="tile" data-shop="category:men">
+          <span class="tile-chip"><i></i>Shop / Men</span>
+          <h3>Men</h3>
+          <span class="tile-link">Shop Men
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </span>
+        </a>
+        <a href="kicks-lab.html?category=women#drop" class="tile" data-shop="category:women">
+          <span class="tile-chip"><i></i>Shop / Women</span>
+          <h3>Women</h3>
+          <span class="tile-link">Shop Women
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </span>
+        </a>
+        <a href="kicks-lab.html?filter=new#drop" class="tile" data-shop="filter:new">
+          <span class="tile-chip"><i></i>Shop / New</span>
+          <h3>New Drops</h3>
+          <span class="tile-link">Shop what's new
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRODUCT GRID -->
+  <section class="section" id="drop" style="padding-top:0;">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 class="display">Drop 003 lineup</h2>
+        <p>Eight pairs. Limited runs. All Friday.</p>
+      </div>
+      <div class="filter-bar" role="group" aria-label="Filter sneakers">
+        <span class="filter-label">Filter</span>
+        <button class="chip" type="button" aria-pressed="false" data-filter="men">Men</button>
+        <button class="chip" type="button" aria-pressed="false" data-filter="women">Women</button>
+        <button class="chip" type="button" aria-pressed="false" data-filter="new">New</button>
+        <button class="chip" type="button" aria-pressed="false" data-filter="sale">Sale</button>
+        <button class="chip" type="button" aria-pressed="false" data-filter="under100">Under $100</button>
+        <span class="filter-count" id="filterCount" aria-live="polite">8 pairs</span>
+      </div>
+      <div class="products" id="skeletonGrid"><div class="card skeleton" aria-hidden="true"><div class="sk-media"></div><div class="sk-body"><div class="sk-line w40"></div><div class="sk-line w80"></div><div class="sk-line w60"></div></div></div><div class="card skeleton" aria-hidden="true"><div class="sk-media"></div><div class="sk-body"><div class="sk-line w40"></div><div class="sk-line w80"></div><div class="sk-line w60"></div></div></div><div class="card skeleton" aria-hidden="true"><div class="sk-media"></div><div class="sk-body"><div class="sk-line w40"></div><div class="sk-line w80"></div><div class="sk-line w60"></div></div></div><div class="card skeleton" aria-hidden="true"><div class="sk-media"></div><div class="sk-body"><div class="sk-line w40"></div><div class="sk-line w80"></div><div class="sk-line w60"></div></div></div><div class="card skeleton" aria-hidden="true"><div class="sk-media"></div><div class="sk-body"><div class="sk-line w40"></div><div class="sk-line w80"></div><div class="sk-line w60"></div></div></div><div class="card skeleton" aria-hidden="true"><div class="sk-media"></div><div class="sk-body"><div class="sk-line w40"></div><div class="sk-line w80"></div><div class="sk-line w60"></div></div></div><div class="card skeleton" aria-hidden="true"><div class="sk-media"></div><div class="sk-body"><div class="sk-line w40"></div><div class="sk-line w80"></div><div class="sk-line w60"></div></div></div><div class="card skeleton" aria-hidden="true"><div class="sk-media"></div><div class="sk-body"><div class="sk-line w40"></div><div class="sk-line w80"></div><div class="sk-line w60"></div></div></div></div>
+      <div class="products" id="productGrid" style="display:none;">
+
+        <article data-gender="men" class="card">
+          <div class="card-media">
+            <span class="tag new">New</span>
+            <button class="save-btn" type="button" aria-pressed="false" aria-label="Save Nike Air Max 90" data-item="{&quot;id&quot;: &quot;nike-air-max-90&quot;, &quot;brand&quot;: &quot;Nike&quot;, &quot;name&quot;: &quot;Air Max 90&quot;, &quot;color&quot;: &quot;Infrared / White&quot;, &quot;size&quot;: &quot;9&quot;, &quot;price&quot;: 140, &quot;qty&quot;: 1, &quot;svg&quot;: &quot;<svg viewBox=\&quot;0 0 240 140\&quot; fill=\&quot;none\&quot;><path d=\&quot;M22 96 C18 82 24 74 40 72 L74 66 C88 62 96 48 100 34 L128 30 C140 46 158 62 186 68 C214 74 226 84 226 98 L226 106 L22 106Z\&quot; fill=\&quot;#EDEDEA\&quot;/><path d=\&quot;M22 96 C40 92 60 90 80 86 L110 76 C150 88 200 90 226 98 L226 106 L22 106Z\&quot; fill=\&quot;#C8C8C4\&quot; opacity=\&quot;.55\&quot;/><path d=\&quot;M70 92 C100 82 140 84 176 94\&quot; stroke=\&quot;#E8322C\&quot; stroke-width=\&quot;5\&quot; stroke-linecap=\&quot;round\&quot;/><path d=\&quot;M16 104 L232 104 L232 116 C232 120 228 122 224 122 L30 122 C20 122 14 116 16 104Z\&quot; fill=\&quot;#FFFFFF\&quot;/></svg>&quot;}" onclick="toggleSave(this)"><svg viewBox="0 0 24 24" stroke-linejoin="round"><path d="M12 20.5s-7.5-4.6-9.3-9.4C1.5 7.6 3.6 4.5 6.8 4.5c2 0 3.7 1.1 5.2 3 1.5-1.9 3.2-3 5.2-3 3.2 0 5.3 3.100 4.100 6.600C19.500 15.900 12 20.500 12 20.500z"/></svg></button>
+            <svg class="shoe" viewBox="0 0 240 140" fill="none" role="img" aria-hidden="true">
+<ellipse cx="120" cy="124" rx="95" ry="7" fill="#000" opacity=".35"/>
+<path d="M22 96 C18 82 24 74 40 72 L74 66 C88 62 96 48 100 34 L128 30 C140 46 158 62 186 68 C214 74 226 84 226 98 L226 106 L22 106Z" fill="#EDEDEA"/>
+<path d="M100 34 L128 30 C130 34 132 38 136 42 L108 52 C104 46 101 40 100 34Z" fill="#C8C8C4" opacity=".9"/>
+<path d="M22 96 C40 92 60 90 80 86 L110 76 C150 88 200 90 226 98 L226 106 L22 106Z" fill="#C8C8C4" opacity=".55"/>
+<path d="M112 40 L120 46 M120 36 L128 42 M128 46 L136 52 M118 54 L126 60 M132 58 L140 64" stroke="#111" stroke-width="3" stroke-linecap="round"/>
+<path d="M70 92 C100 82 140 84 176 94" stroke="#E8322C" stroke-width="5" stroke-linecap="round"/>
+<path d="M16 104 L232 104 L232 116 C232 120 228 122 224 122 L30 122 C20 122 14 116 16 104Z" fill="#FFFFFF"/>
+<path d="M16 108 L232 108" stroke="#000" stroke-opacity=".12" stroke-width="2"/>
+</svg>
+            <button class="quick-add" type="button" aria-label="Quick add Nike Air Max 90" onclick="addToCart(this)" data-item="{&quot;id&quot;: &quot;nike-air-max-90&quot;, &quot;brand&quot;: &quot;Nike&quot;, &quot;name&quot;: &quot;Air Max 90&quot;, &quot;color&quot;: &quot;Infrared / White&quot;, &quot;size&quot;: &quot;9&quot;, &quot;price&quot;: 140, &quot;qty&quot;: 1, &quot;svg&quot;: &quot;<svg viewBox=\&quot;0 0 240 140\&quot; fill=\&quot;none\&quot;><path d=\&quot;M22 96 C18 82 24 74 40 72 L74 66 C88 62 96 48 100 34 L128 30 C140 46 158 62 186 68 C214 74 226 84 226 98 L226 106 L22 106Z\&quot; fill=\&quot;#EDEDEA\&quot;/><path d=\&quot;M22 96 C40 92 60 90 80 86 L110 76 C150 88 200 90 226 98 L226 106 L22 106Z\&quot; fill=\&quot;#C8C8C4\&quot; opacity=\&quot;.55\&quot;/><path d=\&quot;M70 92 C100 82 140 84 176 94\&quot; stroke=\&quot;#E8322C\&quot; stroke-width=\&quot;5\&quot; stroke-linecap=\&quot;round\&quot;/><path d=\&quot;M16 104 L232 104 L232 116 C232 120 228 122 224 122 L30 122 C20 122 14 116 16 104Z\&quot; fill=\&quot;#FFFFFF\&quot;/></svg>&quot;}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Quick Add</button>
+          </div>
+          <div class="card-body">
+            <div class="card-brand">Nike</div>
+            <h4><a href="nova-runner.html" class="card-link">Air Max 90</a></h4>
+            <div class="model">Infrared / White</div>
+            <div class="card-foot"><span class="price">$140</span></div>
+          </div>
+        </article>
+
+        <article data-gender="women" class="card">
+          <div class="card-media">
+            
+            <button class="save-btn" type="button" aria-pressed="false" aria-label="Save Adidas Samba OG" data-item="{&quot;id&quot;: &quot;adidas-samba-og&quot;, &quot;brand&quot;: &quot;Adidas&quot;, &quot;name&quot;: &quot;Samba OG&quot;, &quot;color&quot;: &quot;Core Black / Gum&quot;, &quot;size&quot;: &quot;9&quot;, &quot;price&quot;: 100, &quot;qty&quot;: 1, &quot;svg&quot;: &quot;<svg viewBox=\&quot;0 0 240 140\&quot; fill=\&quot;none\&quot;><path d=\&quot;M22 96 C18 82 24 74 40 72 L74 66 C88 62 96 48 100 34 L128 30 C140 46 158 62 186 68 C214 74 226 84 226 98 L226 106 L22 106Z\&quot; fill=\&quot;#16161A\&quot;/><path d=\&quot;M22 96 C40 92 60 90 80 86 L110 76 C150 88 200 90 226 98 L226 106 L22 106Z\&quot; fill=\&quot;#F4F4F2\&quot; opacity=\&quot;.55\&quot;/><path d=\&quot;M70 92 C100 82 140 84 176 94\&quot; stroke=\&quot;#F4F4F2\&quot; stroke-width=\&quot;5\&quot; stroke-linecap=\&quot;round\&quot;/><path d=\&quot;M16 104 L232 104 L232 116 C232 120 228 122 224 122 L30 122 C20 122 14 116 16 104Z\&quot; fill=\&quot;#C8A06A\&quot;/></svg>&quot;}" onclick="toggleSave(this)"><svg viewBox="0 0 24 24" stroke-linejoin="round"><path d="M12 20.5s-7.5-4.6-9.3-9.4C1.5 7.6 3.6 4.5 6.8 4.5c2 0 3.7 1.1 5.2 3 1.5-1.9 3.2-3 5.2-3 3.2 0 5.3 3.100 4.100 6.600C19.500 15.900 12 20.500 12 20.500z"/></svg></button>
+            <svg class="shoe" viewBox="0 0 240 140" fill="none" role="img" aria-hidden="true">
+<ellipse cx="120" cy="124" rx="95" ry="7" fill="#000" opacity=".35"/>
+<path d="M22 96 C18 82 24 74 40 72 L74 66 C88 62 96 48 100 34 L128 30 C140 46 158 62 186 68 C214 74 226 84 226 98 L226 106 L22 106Z" fill="#16161A"/>
+<path d="M100 34 L128 30 C130 34 132 38 136 42 L108 52 C104 46 101 40 100 34Z" fill="#F4F4F2" opacity=".9"/>
+<path d="M22 96 C40 92 60 90 80 86 L110 76 C150 88 200 90 226 98 L226 106 L22 106Z" fill="#F4F4F2" opacity=".55"/>
+<path d="M112 40 L120 46 M120 36 L128 42 M128 46 L136 52 M118 54 L126 60 M132 58 L140 64" stroke="#F4F4F2" stroke-width="3" stroke-linecap="round"/>
+<path d="M70 92 C100 82 140 84 176 94" stroke="#F4F4F2" stroke-width="5" stroke-linecap="round"/>
+<path d="M16 104 L232 104 L232 116 C232 120 228 122 224 122 L30 122 C20 122 14 116 16 104Z" fill="#C8A06A"/>
+<path d="M16 108 L232 108" stroke="#000" stroke-opacity=".12" stroke-width="2"/>
+</svg>
+            <button class="quick-add" type="button" aria-label="Quick add Adidas Samba OG" onclick="addToCart(this)" data-item="{&quot;id&quot;: &quot;adidas-samba-og&quot;, &quot;brand&quot;: &quot;Adidas&quot;, &quot;name&quot;: &quot;Samba OG&quot;, &quot;color&quot;: &quot;Core Black / Gum&quot;, &quot;size&quot;: &quot;9&quot;, &quot;price&quot;: 100, &quot;qty&quot;: 1, &quot;svg&quot;: &quot;<svg viewBox=\&quot;0 0 240 140\&quot; fill=\&quot;none\&quot;><path d=\&quot;M22 96 C18 82 24 74 40 72 L74 66 C88 62 96 48 100 34 L128 30 C140 46 158 62 186 68 C214 74 226 84 226 98 L226 106 L22 106Z\&quot; fill=\&quot;#16161A\&quot;/><path d=\&quot;M22 96 C40 92 60 90 80 86 L110 76 C150 88 200 90 226 98 L226 106 L22 106Z\&quot; fill=\&quot;#F4F4F2\&quot; opacity=\&quot;.55\&quot;/><path d=\&quot;M70 92 C100 82 140 84 176 94\&quot; stroke=\&quot;#F4F4F2\&quot; stroke-width=\&quot;5\&quot; stroke-linecap=\&quot;round\&quot;/><path d=\&quot;M16 104 L232 104 L232 116 C232 120 228 122 224 122 L30 122 C20 122 14 116 16 104Z\&quot; fill=\&quot;#C8A06A\&quot;/></svg>&quot;}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Quick Add</button>
+          </div>
+          <div class="card-body">
+            <div class="card-brand">Adidas</div>
+            <h4><a href="nova-runner.html" class="card-link">Samba OG</a></h4>
+            <div class="model">Core Black / Gum</div>
+            <div class="card-foot"><span class="price">$100</span></div>
+          </div>
+        </article>
+
+        <article data-gender="women" class="card">
+          <div class="card-media">
+            <span class="tag sale">Sale</span>
+            <button class="save-btn" type="button" aria-pressed="false" aria-label="Save New Balance 550" data-item="{&quot;id&quot;: &quot;new-balance-550&quot;, &quot;brand&quot;: &quot;New Balance&quot;, &quot;name&quot;: &quot;550&quot;, &quot;color&quot;: &quot;White / Green&quot;, &quot;size&quot;: &quot;9&quot;, &quot;price&quot;: 119, &quot;qty&quot;: 1, &quot;svg&quot;: &quot;<svg viewBox=\&quot;0 0 240 140\&quot; fill=\&quot;none\&quot;><path d=\&quot;M22 96 C18 82 24 74 40 72 L74 66 C88 62 96 48 100 34 L128 30 C140 46 158 62 186 68 C214 74 226 84 226 98 L226 106 L22 106Z\&quot; fill=\&quot;#F4F4F2\&quot;/><path d=\&quot;M22 96 C40 92 60 90 80 86 L110 76 C150 88 200 90 226 98 L226 106 L22 106Z\&quot; fill=\&quot;#DADAD5\&quot; opacity=\&quot;.55\&quot;/><path d=\&quot;M70 92 C100 82 140 84 176 94\&quot; stroke=\&quot;#1F7A4D\&quot; stroke-width=\&quot;5\&quot; stroke-linecap=\&quot;round\&quot;/><path d=\&quot;M16 104 L232 104 L232 116 C232 120 228 122 224 122 L30 122 C20 122 14 116 16 104Z\&quot; fill=\&quot;#FFFFFF\&quot;/></svg>&quot;}" onclick="toggleSave(this)"><svg viewBox="0 0 24 24" stroke-linejoin="round"><path d="M12 20.5s-7.5-4.6-9.3-9.4C1.5 7.6 3.6 4.5 6.8 4.5c2 0 3.7 1.1 5.2 3 1.5-1.9 3.2-3 5.2-3 3.2 0 5.3 3.100 4.100 6.600C19.500 15.900 12 20.500 12 20.500z"/></svg></button>
+            <svg class="shoe" viewBox="0 0 240 140" fill="none" role="img" aria-hidden="true">
+<ellipse cx="120" cy="124" rx="95" ry="7" fill="#000" opacity=".35"/>
+<path d="M22 96 C18 82 24 74 40 72 L74 66 C88 62 96 48 100 34 L128 30 C140 46 158 62 186 68 C214 74 226 84 226 98 L226 106 L22 106Z" fill="#F4F4F2"/>
+<path d="M100 34 L128 30 C130 34 132 38 136 42 L108 52 C104 46 101 40 100 34Z" fill="#DADAD5" opacity=".9"/>
+<path d="M22 96 C40 92 60 90 80 86 L110 76 C150 88 200 90 226 98 L226 106 L22 106Z" fill="#DADAD5" opacity=".55"/>
+<path d="M112 40 L120 46 M120 36 L128 42 M128 46 L136 52 M118 54 L126 60 M132 58 L140 64" stroke="#222" stroke-width="3" stroke-linecap="round"/>
+<path d="M70 92 C100 82 140 84 176 94" stroke="#1F7A4D" stroke-width="5" stroke-linecap="round"/>
+<path d="M16 104 L232 104 L232 116 C232 120 228 122 224 122 L30 122 C20 122 14 116 16 104Z" fill="#FFFFFF"/>
+<path d="M16 108 L232 108" stroke="#000" stroke-opacity=".12" stroke-width="2"/>
+</svg>
+            <button class="quick-add" type="button" aria-label="Quick add New Balance 550" onclick="addToCart(this)" data-item="{&quot;id&quot;: &quot;new-balance-550&quot;, &quot;brand&quot;: &quot;New Balance&quot;, &quot;name&quot;: &quot;550&quot;, &quot;color&quot;: &quot;White / Green&quot;, &quot;size&quot;: &quot;9&quot;, &quot;price&quot;: 119, &quot;qty&quot;: 1, &quot;svg&quot;: &quot;<svg viewBox=\&quot;0 0 240 140\&quot; fill=\&quot;none\&quot;><path d=\&quot;M22 96 C18 82 24 74 40 72 L74 66 C88 62 96 48 100 34 L128 30 C140 46 158 62 186 68 C214 74 226 84 226 98 L226 106 L22 106Z\&quot; fill=\&quot;#F4F4F2\&quot;/><path d=\&quot;M22 96 C40 92 60 90 80 86 L110 76 C150 88 200 90 226 98 L226 106 L22 106Z\&quot; fill=\&quot;#DADAD5\&quot; opacity=\&quot;.55\&quot;/><path d=\&quot;M70 92 C100 82 140 84 176 94\&quot; stroke=\&quot;#1F7A4D\&quot; stroke-width=\&quot;5\&quot; stroke-linecap=\&quot;round\&quot;/><path d=\&quot;M16 104 L232 104 L232 116 C232 120 228 122 224 122 L30 122 C20 122 14 116 16 104Z\&quot; fill=\&quot;#FFFFFF\&quot;/></svg>&quot;}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Quick Add</button>
+          </div>
+          <div class="card-body">
+            <div class="card-brand">New Balance</div>
+            <h4><a href="nova-runner.html" class="card-link">550</a></h4>
+            <div class="model">White / Green</div>
+            <div class="card-foot"><span class="price now">$119</span><span class="price was">$130</span></div>
+          </div>
+        </article>
+
+        <article data-gender="men" class="card">
+          <div class="card-media">
+            <span class="tag new">New</span>
+            <button class="save-btn" type="button" aria-pressed="false" aria-label="Save Jordan Air Jordan 1 Low" data-item="{&quot;id&quot;: &quot;jordan-air-jordan-1-low&quot;, &quot;brand&quot;: &quot;Jordan&quot;, &quot;name&quot;: &quot;Air Jordan 1 Low&quot;, &quot;color&quot;: &quot;Royal Blue&quot;, &quot;size&quot;: &quot;9&quot;, &quot;price&quot;: 135, &quot;qty&quot;: 1, &quot;svg&quot;: &quot;<svg viewBox=\&quot;0 0 240 140\&quot; fill=\&quot;none\&quot;><path d=\&quot;M22 96 C18 82 24 74 40 72 L74 66 C88 62 96 48 100 34 L128 30 C140 46 158 62 186 68 C214 74 226 84 226 98 L226 106 L22 106Z\&quot; fill=\&quot;#2E5EFF\&quot;/><path d=\&quot;M22 96 C40 92 60 90 80 86 L110 76 C150 88 200 90 226 98 L226 106 L22 106Z\&quot; fill=\&quot;#F4F4F2\&quot; opacity=\&quot;.55\&quot;/><path d=\&quot;M70 92 C100 82 140 84 176 94\&quot; stroke=\&quot;#0B0B0D\&quot; stroke-width=\&quot;5\&quot; stroke-linecap=\&quot;round\&quot;/><path d=\&quot;M16 104 L232 104 L232 116 C232 120 228 122 224 122 L30 122 C20 122 14 116 16 104Z\&quot; fill=\&quot;#F4F4F2\&quot;/></svg>&quot;}" onclick="toggleSave(this)"><svg viewBox="0 0 24 24" stroke-linejoin="round"><path d="M12 20.5s-7.5-4.6-9.3-9.4C1.5 7.6 3.6 4.5 6.8 4.5c2 0 3.7 1.1 5.2 3 1.5-1.9 3.2-3 5.2-3 3.2 0 5.3 3.100 4.100 6.600C19.500 15.900 12 20.500 12 20.500z"/></svg></button>
+            <svg class="shoe" viewBox="0 0 240 140" fill="none" role="img" aria-hidden="true">
+<ellipse cx="120" cy="124" rx="95" ry="7" fill="#000" opacity=".35"/>
+<path d="M22 96 C18 82 24 74 40 72 L74 66 C88 62 96 48 100 34 L128 30 C140 46 158 62 186 68 C214 74 226 84 226 98 L226 106 L22 106Z" fill="#2E5EFF"/>
+<path d="M100 34 L128 30 C130 34 132 38 136 42 L108 52 C104 46 101 40 100 34Z" fill="#F4F4F2" opacity=".9"/>
+<path d="M22 96 C40 92 60 90 80 86 L110 76 C150 88 200 90 226 98 L226 106 L22 106Z" fill="#F4F4F2" opacity=".55"/>
+<path d="M112 40 L120 46 M120 36 L128 42 M128 46 L136 52 M118 54 L126 60 M132 58 L140 64" stroke="#0B0B0D" stroke-width="3" stroke-linecap="round"/>
+<path d="M70 92 C100 82 140 84 176 94" stroke="#0B0B0D" stroke-width="5" stroke-linecap="round"/>
+<path d="M16 104 L232 104 L232 116 C232 120 228 122 224 122 L30 122 C20 122 14 116 16 104Z" fill="#F4F4F2"/>
+<path d="M16 108 L232 108" stroke="#000" stroke-opacity=".12" stroke-width="2"/>
+</svg>
+            <button class="quick-add" type="button" aria-label="Quick add Jordan Air Jordan 1 Low" onclick="addToCart(this)" data-item="{&quot;id&quot;: &quot;jordan-air-jordan-1-low&quot;, &quot;brand&quot;: &quot;Jordan&quot;, &quot;name&quot;: &quot;Air Jordan 1 Low&quot;, &quot;color&quot;: &quot;Royal Blue&quot;, &quot;size&quot;: &quot;9&quot;, &quot;price&quot;: 135, &quot;qty&quot;: 1, &quot;svg&quot;: &quot;<svg viewBox=\&quot;0 0 240 140\&quot; fill=\&quot;none\&quot;><path d=\&quot;M22 96 C18 82 24 74 40 72 L74 66 C88 62 96 48 100 34 L128 30 C140 46 158 62 186 68 C214 74 226 84 226 98 L226 106 L22 106Z\&quot; fill=\&quot;#2E5EFF\&quot;/><path d=\&quot;M22 96 C40 92 60 90 80 86 L110 76 C150 88 200 90 226 98 L226 106 L22 106Z\&quot; fill=\&quot;#F4F4F2\&quot; opacity=\&quot;.55\&quot;/><path d=\&quot;M70 92 C100 82 140 84 176 94\&quot; stroke=\&quot;#0B0B0D\&quot; stroke-width=\&quot;5\&quot; stroke-linecap=\&quot;round\&quot;/><path d=\&quot;M16 104 L232 104 L232 116 C232 120 228 122 224 122 L30 122 C20 122 14 116 16 104Z\&quot; fill=\&quot;#F4F4F2\&quot;/></svg>&quot;}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Quick Add</button>
+          </div>
+          <div class="card-body">
+            <div class="card-brand">Jordan</div>
+            <h4><a href="nova-runner.html" class="card-link">Air Jordan 1 Low</a></h4>
+            <div class="model">Royal Blue</div>
+            <div class="card-foot"><span class="price">$135</span></div>
+          </div>
+        </article>
+
+        <article data-gender="men" class="card oos">
+          <div class="card-media"><span class="tag oos-tag">Out of Stock</span>
+            
+            <button class="save-btn" type="button" aria-pressed="false" aria-label="Save ASICS Gel-Kayano 14" onclick="toggleSave(this)"><svg viewBox="0 0 24 24" stroke-linejoin="round"><path d="M12 20.5s-7.5-4.6-9.3-9.4C1.5 7.6 3.6 4.5 6.8 4.5c2 0 3.7 1.1 5.2 3 1.5-1.9 3.2-3 5.2-3 3.2 0 5.3 3.100 4.100 6.600C19.500 15.900 12 20.500 12 20.500z"/></svg></button>
+            <svg class="shoe" viewBox="0 0 240 140" fill="none" role="img" aria-hidden="true">
+<ellipse cx="120" cy="124" rx="95" ry="7" fill="#000" opacity=".35"/>
+<path d="M22 96 C18 82 24 74 40 72 L74 66 C88 62 96 48 100 34 L128 30 C140 46 158 62 186 68 C214 74 226 84 226 98 L226 106 L22 106Z" fill="#E9E4D8"/>
+<path d="M100 34 L128 30 C130 34 132 38 136 42 L108 52 C104 46 101 40 100 34Z" fill="#B9BCC4" opacity=".9"/>
+<path d="M22 96 C40 92 60 90 80 86 L110 76 C150 88 200 90 226 98 L226 106 L22 106Z" fill="#B9BCC4" opacity=".55"/>
+<path d="M112 40 L120 46 M120 36 L128 42 M128 46 L136 52 M118 54 L126 60 M132 58 L140 64" stroke="#555" stroke-width="3" stroke-linecap="round"/>
+<path d="M70 92 C100 82 140 84 176 94" stroke="#8D93A0" stroke-width="5" stroke-linecap="round"/>
+<path d="M16 104 L232 104 L232 116 C232 120 228 122 224 122 L30 122 C20 122 14 116 16 104Z" fill="#F4F4F2"/>
+<path d="M16 108 L232 108" stroke="#000" stroke-opacity=".12" stroke-width="2"/>
+</svg>
+            <button class="quick-add" type="button" disabled aria-label="Notify me when ASICS Gel-Kayano 14 is back in stock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0-6 6c0 4-1.5 5.5-1.5 6.5A1.5 1.5 0 0 0 6 17h12a1.5 1.5 0 0 0 1.5-1.5C19.5 14.5 18 13 18 9a6 6 0 0 0-6-6z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg>Notify Me</button>
+          </div>
+          <div class="card-body">
+            <div class="card-brand">ASICS</div>
+            <h4><a href="nova-runner.html" class="card-link">Gel-Kayano 14</a></h4>
+            <div class="model">Cream / Silver</div>
+            <div class="card-foot"><span class="price">$160</span></div>
+          </div>
+        </article>
+
+        <article data-gender="women" class="card">
+          <div class="card-media">
+            <span class="tag sale">Sale</span>
+            <button class="save-btn" type="button" aria-pressed="false" aria-label="Save Puma Speedcat OG" data-item="{&quot;id&quot;: &quot;puma-speedcat-og&quot;, &quot;brand&quot;: &quot;Puma&quot;, &quot;name&quot;: &quot;Speedcat OG&quot;, &quot;color&quot;: &quot;Black / Red&quot;, &quot;size&quot;: &quot;9&quot;, &quot;price&quot;: 89, &quot;qty&quot;: 1, &quot;svg&quot;: &quot;<svg viewBox=\&quot;0 0 240 140\&quot; fill=\&quot;none\&quot;><path d=\&quot;M22 96 C18 82 24 74 40 72 L74 66 C88 62 96 48 100 34 L128 30 C140 46 158 62 186 68 C214 74 226 84 226 98 L226 106 L22 106Z\&quot; fill=\&quot;#141417\&quot;/><path d=\&quot;M22 96 C40 92 60 90 80 86 L110 76 C150 88 200 90 226 98 L226 106 L22 106Z\&quot; fill=\&quot;#3A3A40\&quot; opacity=\&quot;.55\&quot;/><path d=\&quot;M70 92 C100 82 140 84 176 94\&quot; stroke=\&quot;#E8322C\&quot; stroke-width=\&quot;5\&quot; stroke-linecap=\&quot;round\&quot;/><path d=\&quot;M16 104 L232 104 L232 116 C232 120 228 122 224 122 L30 122 C20 122 14 116 16 104Z\&quot; fill=\&quot;#E8322C\&quot;/></svg>&quot;}" onclick="toggleSave(this)"><svg viewBox="0 0 24 24" stroke-linejoin="round"><path d="M12 20.5s-7.5-4.6-9.3-9.4C1.5 7.6 3.6 4.5 6.8 4.5c2 0 3.7 1.1 5.2 3 1.5-1.9 3.2-3 5.2-3 3.2 0 5.3 3.100 4.100 6.600C19.500 15.900 12 20.500 12 20.500z"/></svg></button>
+            <svg class="shoe" viewBox="0 0 240 140" fill="none" role="img" aria-hidden="true">
+<ellipse cx="120" cy="124" rx="95" ry="7" fill="#000" opacity=".35"/>
+<path d="M22 96 C18 82 24 74 40 72 L74 66 C88 62 96 48 100 34 L128 30 C140 46 158 62 186 68 C214 74 226 84 226 98 L226 106 L22 106Z" fill="#141417"/>
+<path d="M100 34 L128 30 C130 34 132 38 136 42 L108 52 C104 46 101 40 100 34Z" fill="#3A3A40" opacity=".9"/>
+<path d="M22 96 C40 92 60 90 80 86 L110 76 C150 88 200 90 226 98 L226 106 L22 106Z" fill="#3A3A40" opacity=".55"/>
+<path d="M112 40 L120 46 M120 36 L128 42 M128 46 L136 52 M118 54 L126 60 M132 58 L140 64" stroke="#F4F4F2" stroke-width="3" stroke-linecap="round"/>
+<path d="M70 92 C100 82 140 84 176 94" stroke="#E8322C" stroke-width="5" stroke-linecap="round"/>
+<path d="M16 104 L232 104 L232 116 C232 120 228 122 224 122 L30 122 C20 122 14 116 16 104Z" fill="#E8322C"/>
+<path d="M16 108 L232 108" stroke="#000" stroke-opacity=".12" stroke-width="2"/>
+</svg>
+            <button class="quick-add" type="button" aria-label="Quick add Puma Speedcat OG" onclick="addToCart(this)" data-item="{&quot;id&quot;: &quot;puma-speedcat-og&quot;, &quot;brand&quot;: &quot;Puma&quot;, &quot;name&quot;: &quot;Speedcat OG&quot;, &quot;color&quot;: &quot;Black / Red&quot;, &quot;size&quot;: &quot;9&quot;, &quot;price&quot;: 89, &quot;qty&quot;: 1, &quot;svg&quot;: &quot;<svg viewBox=\&quot;0 0 240 140\&quot; fill=\&quot;none\&quot;><path d=\&quot;M22 96 C18 82 24 74 40 72 L74 66 C88 62 96 48 100 34 L128 30 C140 46 158 62 186 68 C214 74 226 84 226 98 L226 106 L22 106Z\&quot; fill=\&quot;#141417\&quot;/><path d=\&quot;M22 96 C40 92 60 90 80 86 L110 76 C150 88 200 90 226 98 L226 106 L22 106Z\&quot; fill=\&quot;#3A3A40\&quot; opacity=\&quot;.55\&quot;/><path d=\&quot;M70 92 C100 82 140 84 176 94\&quot; stroke=\&quot;#E8322C\&quot; stroke-width=\&quot;5\&quot; stroke-linecap=\&quot;round\&quot;/><path d=\&quot;M16 104 L232 104 L232 116 C232 120 228 122 224 122 L30 122 C20 122 14 116 16 104Z\&quot; fill=\&quot;#E8322C\&quot;/></svg>&quot;}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Quick Add</button>
+          </div>
+          <div class="card-body">
+            <div class="card-brand">Puma</div>
+            <h4><a href="nova-runner.html" class="card-link">Speedcat OG</a></h4>
+            <div class="model">Black / Red</div>
+            <div class="card-foot"><span class="price now">$89</span><span class="price was">$120</span></div>
+          </div>
+        </article>
+
+        <article data-gender="women" class="card">
+          <div class="card-media">
+            
+            <button class="save-btn" type="button" aria-pressed="false" aria-label="Save Converse Chuck 70 Hi" data-item="{&quot;id&quot;: &quot;converse-chuck-70-hi&quot;, &quot;brand&quot;: &quot;Converse&quot;, &quot;name&quot;: &quot;Chuck 70 Hi&quot;, &quot;color&quot;: &quot;Parchment&quot;, &quot;size&quot;: &quot;9&quot;, &quot;price&quot;: 95, &quot;qty&quot;: 1, &quot;svg&quot;: &quot;<svg viewBox=\&quot;0 0 240 140\&quot; fill=\&quot;none\&quot;><path d=\&quot;M22 96 C18 82 24 74 40 72 L74 66 C88 62 96 48 100 34 L128 30 C140 46 158 62 186 68 C214 74 226 84 226 98 L226 106 L22 106Z\&quot; fill=\&quot;#E7DFC9\&quot;/><path d=\&quot;M22 96 C40 92 60 90 80 86 L110 76 C150 88 200 90 226 98 L226 106 L22 106Z\&quot; fill=\&quot;#F4F4F2\&quot; opacity=\&quot;.55\&quot;/><path d=\&quot;M70 92 C100 82 140 84 176 94\&quot; stroke=\&quot;#B23A2E\&quot; stroke-width=\&quot;5\&quot; stroke-linecap=\&quot;round\&quot;/><path d=\&quot;M16 104 L232 104 L232 116 C232 120 228 122 224 122 L30 122 C20 122 14 116 16 104Z\&quot; fill=\&quot;#F4F4F2\&quot;/></svg>&quot;}" onclick="toggleSave(this)"><svg viewBox="0 0 24 24" stroke-linejoin="round"><path d="M12 20.5s-7.5-4.6-9.3-9.4C1.5 7.6 3.6 4.5 6.8 4.5c2 0 3.7 1.1 5.2 3 1.5-1.9 3.2-3 5.2-3 3.2 0 5.3 3.100 4.100 6.600C19.500 15.900 12 20.500 12 20.500z"/></svg></button>
+            <svg class="shoe" viewBox="0 0 240 140" fill="none" role="img" aria-hidden="true">
+<ellipse cx="120" cy="124" rx="95" ry="7" fill="#000" opacity=".35"/>
+<path d="M22 96 C18 82 24 74 40 72 L74 66 C88 62 96 48 100 34 L128 30 C140 46 158 62 186 68 C214 74 226 84 226 98 L226 106 L22 106Z" fill="#E7DFC9"/>
+<path d="M100 34 L128 30 C130 34 132 38 136 42 L108 52 C104 46 101 40 100 34Z" fill="#F4F4F2" opacity=".9"/>
+<path d="M22 96 C40 92 60 90 80 86 L110 76 C150 88 200 90 226 98 L226 106 L22 106Z" fill="#F4F4F2" opacity=".55"/>
+<path d="M112 40 L120 46 M120 36 L128 42 M128 46 L136 52 M118 54 L126 60 M132 58 L140 64" stroke="#B23A2E" stroke-width="3" stroke-linecap="round"/>
+<path d="M70 92 C100 82 140 84 176 94" stroke="#B23A2E" stroke-width="5" stroke-linecap="round"/>
+<path d="M16 104 L232 104 L232 116 C232 120 228 122 224 122 L30 122 C20 122 14 116 16 104Z" fill="#F4F4F2"/>
+<path d="M16 108 L232 108" stroke="#000" stroke-opacity=".12" stroke-width="2"/>
+</svg>
+            <button class="quick-add" type="button" aria-label="Quick add Converse Chuck 70 Hi" onclick="addToCart(this)" data-item="{&quot;id&quot;: &quot;converse-chuck-70-hi&quot;, &quot;brand&quot;: &quot;Converse&quot;, &quot;name&quot;: &quot;Chuck 70 Hi&quot;, &quot;color&quot;: &quot;Parchment&quot;, &quot;size&quot;: &quot;9&quot;, &quot;price&quot;: 95, &quot;qty&quot;: 1, &quot;svg&quot;: &quot;<svg viewBox=\&quot;0 0 240 140\&quot; fill=\&quot;none\&quot;><path d=\&quot;M22 96 C18 82 24 74 40 72 L74 66 C88 62 96 48 100 34 L128 30 C140 46 158 62 186 68 C214 74 226 84 226 98 L226 106 L22 106Z\&quot; fill=\&quot;#E7DFC9\&quot;/><path d=\&quot;M22 96 C40 92 60 90 80 86 L110 76 C150 88 200 90 226 98 L226 106 L22 106Z\&quot; fill=\&quot;#F4F4F2\&quot; opacity=\&quot;.55\&quot;/><path d=\&quot;M70 92 C100 82 140 84 176 94\&quot; stroke=\&quot;#B23A2E\&quot; stroke-width=\&quot;5\&quot; stroke-linecap=\&quot;round\&quot;/><path d=\&quot;M16 104 L232 104 L232 116 C232 120 228 122 224 122 L30 122 C20 122 14 116 16 104Z\&quot; fill=\&quot;#F4F4F2\&quot;/></svg>&quot;}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Quick Add</button>
+          </div>
+          <div class="card-body">
+            <div class="card-brand">Converse</div>
+            <h4><a href="nova-runner.html" class="card-link">Chuck 70 Hi</a></h4>
+            <div class="model">Parchment</div>
+            <div class="card-foot"><span class="price">$95</span></div>
+          </div>
+        </article>
+
+        <article data-gender="men" class="card">
+          <div class="card-media">
+            <span class="tag new">New</span>
+            <button class="save-btn" type="button" aria-pressed="false" aria-label="Save Saucony Shadow 6000" data-item="{&quot;id&quot;: &quot;saucony-shadow-6000&quot;, &quot;brand&quot;: &quot;Saucony&quot;, &quot;name&quot;: &quot;Shadow 6000&quot;, &quot;color&quot;: &quot;Grey / Orange&quot;, &quot;size&quot;: &quot;9&quot;, &quot;price&quot;: 110, &quot;qty&quot;: 1, &quot;svg&quot;: &quot;<svg viewBox=\&quot;0 0 240 140\&quot; fill=\&quot;none\&quot;><path d=\&quot;M22 96 C18 82 24 74 40 72 L74 66 C88 62 96 48 100 34 L128 30 C140 46 158 62 186 68 C214 74 226 84 226 98 L226 106 L22 106Z\&quot; fill=\&quot;#9AA0AC\&quot;/><path d=\&quot;M22 96 C40 92 60 90 80 86 L110 76 C150 88 200 90 226 98 L226 106 L22 106Z\&quot; fill=\&quot;#C9CCD3\&quot; opacity=\&quot;.55\&quot;/><path d=\&quot;M70 92 C100 82 140 84 176 94\&quot; stroke=\&quot;#F26B1D\&quot; stroke-width=\&quot;5\&quot; stroke-linecap=\&quot;round\&quot;/><path d=\&quot;M16 104 L232 104 L232 116 C232 120 228 122 224 122 L30 122 C20 122 14 116 16 104Z\&quot; fill=\&quot;#F4F4F2\&quot;/></svg>&quot;}" onclick="toggleSave(this)"><svg viewBox="0 0 24 24" stroke-linejoin="round"><path d="M12 20.5s-7.5-4.6-9.3-9.4C1.5 7.6 3.6 4.5 6.8 4.5c2 0 3.7 1.1 5.2 3 1.5-1.9 3.2-3 5.2-3 3.2 0 5.3 3.100 4.100 6.600C19.500 15.900 12 20.500 12 20.500z"/></svg></button>
+            <svg class="shoe" viewBox="0 0 240 140" fill="none" role="img" aria-hidden="true">
+<ellipse cx="120" cy="124" rx="95" ry="7" fill="#000" opacity=".35"/>
+<path d="M22 96 C18 82 24 74 40 72 L74 66 C88 62 96 48 100 34 L128 30 C140 46 158 62 186 68 C214 74 226 84 226 98 L226 106 L22 106Z" fill="#9AA0AC"/>
+<path d="M100 34 L128 30 C130 34 132 38 136 42 L108 52 C104 46 101 40 100 34Z" fill="#C9CCD3" opacity=".9"/>
+<path d="M22 96 C40 92 60 90 80 86 L110 76 C150 88 200 90 226 98 L226 106 L22 106Z" fill="#C9CCD3" opacity=".55"/>
+<path d="M112 40 L120 46 M120 36 L128 42 M128 46 L136 52 M118 54 L126 60 M132 58 L140 64" stroke="#222" stroke-width="3" stroke-linecap="round"/>
+<path d="M70 92 C100 82 140 84 176 94" stroke="#F26B1D" stroke-width="5" stroke-linecap="round"/>
+<path d="M16 104 L232 104 L232 116 C232 120 228 122 224 122 L30 122 C20 122 14 116 16 104Z" fill="#F4F4F2"/>
+<path d="M16 108 L232 108" stroke="#000" stroke-opacity=".12" stroke-width="2"/>
+</svg>
+            <button class="quick-add" type="button" aria-label="Quick add Saucony Shadow 6000" onclick="addToCart(this)" data-item="{&quot;id&quot;: &quot;saucony-shadow-6000&quot;, &quot;brand&quot;: &quot;Saucony&quot;, &quot;name&quot;: &quot;Shadow 6000&quot;, &quot;color&quot;: &quot;Grey / Orange&quot;, &quot;size&quot;: &quot;9&quot;, &quot;price&quot;: 110, &quot;qty&quot;: 1, &quot;svg&quot;: &quot;<svg viewBox=\&quot;0 0 240 140\&quot; fill=\&quot;none\&quot;><path d=\&quot;M22 96 C18 82 24 74 40 72 L74 66 C88 62 96 48 100 34 L128 30 C140 46 158 62 186 68 C214 74 226 84 226 98 L226 106 L22 106Z\&quot; fill=\&quot;#9AA0AC\&quot;/><path d=\&quot;M22 96 C40 92 60 90 80 86 L110 76 C150 88 200 90 226 98 L226 106 L22 106Z\&quot; fill=\&quot;#C9CCD3\&quot; opacity=\&quot;.55\&quot;/><path d=\&quot;M70 92 C100 82 140 84 176 94\&quot; stroke=\&quot;#F26B1D\&quot; stroke-width=\&quot;5\&quot; stroke-linecap=\&quot;round\&quot;/><path d=\&quot;M16 104 L232 104 L232 116 C232 120 228 122 224 122 L30 122 C20 122 14 116 16 104Z\&quot; fill=\&quot;#F4F4F2\&quot;/></svg>&quot;}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Quick Add</button>
+          </div>
+          <div class="card-body">
+            <div class="card-brand">Saucony</div>
+            <h4><a href="nova-runner.html" class="card-link">Shadow 6000</a></h4>
+            <div class="model">Grey / Orange</div>
+            <div class="card-foot"><span class="price">$110</span></div>
+          </div>
+        </article>
+
+        <div class="empty-state" id="emptyState" role="status">
+          <div class="empty-art">
+            <svg viewBox="0 0 240 140" fill="none" aria-hidden="true">
+              <ellipse cx="120" cy="124" rx="80" ry="6" fill="#2E5EFF" opacity=".18"/>
+              <g class="ghost-shoe" stroke="#2E5EFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="7 8">
+                <path d="M22 96 C18 82 24 74 40 72 L74 66 C88 62 96 48 100 34 L128 30 C140 46 158 62 186 68 C214 74 226 84 226 98 L226 106 L22 106Z"/>
+                <path d="M16 106 L232 106 L232 116 C232 120 228 122 224 122 L30 122 C20 122 14 116 16 106Z"/>
+              </g>
+              <circle cx="176" cy="30" r="17" fill="var(--bg-alt)" stroke="#2E5EFF" stroke-width="3"/>
+              <path d="M170 25 C170 19 182 19 182 26 C182 31 176 31 176 36" stroke="#2E5EFF" stroke-width="3" stroke-linecap="round"/>
+              <circle cx="176" cy="42" r="1.8" fill="#2E5EFF"/>
+            </svg>
+          </div>
+          <h3 class="display">No sneakers match your filters</h3>
+          <p>Try widening your search. Remove a filter or two and we'll show you what's on the drop.</p>
+          <div class="empty-actions">
+            <button class="btn-primary" type="button" id="clearFilters">Clear all filters</button>
+            <button class="btn-ghost" type="button" id="undoFilter">Remove last filter</button>
+          </div>
+        </div>
+
+
+      </div>
+    </div>
+  </section>
+
+  <!-- NEW ARRIVALS -->
+  <section class="section" style="padding-top:0;">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 class="display">New arrivals</h2>
+        <p>Fresh in this week, outside the drop cycle.</p>
+      </div>
+      <div class="arrivals-row">
+
+        <div class="arrival-card">
+          <div class="arrival-media">
+            <span class="tag">New</span>
+            <svg viewBox="0 0 200 120" fill="none"><path d="M20 85 C15 90 20 100 35 100 L150 100 C170 100 175 88 165 78 C155 70 150 55 130 50 L75 38 C60 35 50 25 48 15" stroke="#2E5EFF" stroke-width="3" stroke-linecap="round"/><line x1="40" y1="105" x2="150" y2="105" stroke="#8D8D97" stroke-width="2"/></svg>
+            <button class="quick-add" type="button" onclick="bumpCart(this)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Quick Add
+            </button>
+          </div>
+          <div class="arrival-body">
+            <div class="arrival-brand">Kicks Lab</div>
+            <h4>Ridge Runner</h4>
+            <span class="arrival-price">$154</span>
+          </div>
+        </div>
+
+        <div class="arrival-card">
+          <div class="arrival-media">
+            <span class="tag">New</span>
+            <svg viewBox="0 0 200 120" fill="none"><path d="M20 85 C15 90 20 100 35 100 L150 100 C170 100 175 88 165 78 C155 70 150 55 130 50 L75 38 C60 35 50 25 48 15" stroke="#F4F4F2" stroke-width="3" stroke-linecap="round" opacity="0.75"/><line x1="40" y1="105" x2="150" y2="105" stroke="#2E5EFF" stroke-width="2"/></svg>
+            <button class="quick-add" type="button" onclick="bumpCart(this)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Quick Add
+            </button>
+          </div>
+          <div class="arrival-body">
+            <div class="arrival-brand">Kicks Lab</div>
+            <h4>Ridge Runner</h4>
+            <span class="arrival-price">$154</span>
+          </div>
+        </div>
+
+        <div class="arrival-card">
+          <div class="arrival-media">
+            <span class="tag">New</span>
+            <svg viewBox="0 0 200 120" fill="none"><path d="M20 85 C15 90 20 100 35 100 L150 100 C170 100 175 88 165 78 C155 70 150 55 130 50 L75 38 C60 35 50 25 48 15" stroke="#2E5EFF" stroke-width="3" stroke-linecap="round" opacity="0.9"/><line x1="40" y1="105" x2="150" y2="105" stroke="#8D8D97" stroke-width="2"/></svg>
+            <button class="quick-add" type="button" onclick="bumpCart(this)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Quick Add
+            </button>
+          </div>
+          <div class="arrival-body">
+            <div class="arrival-brand">Field Supply Co.</div>
+            <h4>Coastway Mid</h4>
+            <span class="arrival-price">$179</span>
+          </div>
+        </div>
+
+        <div class="arrival-card">
+          <div class="arrival-media">
+            <span class="tag">New</span>
+            <svg viewBox="0 0 200 120" fill="none"><path d="M20 85 C15 90 20 100 35 100 L150 100 C170 100 175 88 165 78 C155 70 150 55 130 50 L75 38 C60 35 50 25 48 15" stroke="#F4F4F2" stroke-width="3" stroke-linecap="round" opacity="0.55"/><line x1="40" y1="105" x2="150" y2="105" stroke="#2E5EFF" stroke-width="2"/></svg>
+            <button class="quick-add" type="button" onclick="bumpCart(this)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Quick Add
+            </button>
+          </div>
+          <div class="arrival-body">
+            <div class="arrival-brand">Field Supply Co.</div>
+            <h4>Coastway Mid</h4>
+            <span class="arrival-price">$179</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- TRUST STRIP -->
+  <div class="wrap">
+    <div class="trust-strip">
+      <div class="trust-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="7" width="14" height="10"/><path d="M15 10h4l3 3v4h-7z"/><circle cx="6" cy="19" r="1.6"/><circle cx="18" cy="19" r="1.6"/></svg>
+        Free Shipping Over $75
+      </div>
+      <div class="trust-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.5 15a9 9 0 1 0 2-9.5L1 10"/></svg>
+        30-Day Easy Returns
+      </div>
+      <div class="trust-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6z"/><polyline points="9 12 11 14 15 10"/></svg>
+        100% Authenticity Guaranteed
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA BAND -->
+  <section class="section" style="padding-top:0;">
+    <div class="band">
+      <div>
+        <h3 class="display">Miss the drop, miss the pair.</h3>
+        <p>Join the text list — we send it once, five minutes before the line forms.</p>
+      </div>
+      <a href="#" class="btn-primary">Get notified
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-top">
+      <div>
+        <a href="#top" class="logo"><span class="dot"></span>KICKS LAB</a>
+        <p style="color:var(--text-muted); font-size:0.9rem; margin-top:14px; max-width:32ch;">Sneakers and streetwear, released in small runs, on our terms.</p>
+        <div class="newsletter">
+          <input type="email" placeholder="Your email" aria-label="Email address">
+          <button type="button">Join</button>
+        </div>
+      </div>
+      <div>
+        <h5>Quick Links</h5>
+        <ul>
+          <li><a href="#">Men</a></li>
+          <li><a href="#">Women</a></li>
+          <li><a href="#drop">New Drops</a></li>
+          <li><a href="#">Sale</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Help</h5>
+        <ul>
+          <li><a href="#">Shipping</a></li>
+          <li><a href="#">Returns</a></li>
+          <li><a href="#">Size guide</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Follow</h5>
+        <div class="socials">
+          <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg></a>
+          <a href="#" aria-label="X"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="4" x2="20" y2="20"/><line x1="20" y1="4" x2="4" y2="20"/></svg></a>
+          <a href="#" aria-label="TikTok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 4v9.5a3.5 3.5 0 1 1-3-3.46"/><path d="M14 4c0 2.5 2 4.5 4.5 4.5"/></svg></a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Kicks Lab. All rights reserved.</span>
+      <span>Oakland · New York · Tokyo</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Sticky nav glass background on scroll
+  const nav = document.getElementById('siteNav');
+  const onScroll = () => {
+    if (window.scrollY > 24) nav.classList.add('scrolled');
+    else nav.classList.remove('scrolled');
+  };
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  // Shared cart storage (localStorage 'kl-cart'), used across Shop / Cart / Checkout
+  const CartStore = {
+    key: 'kl-cart',
+    read(){ try { const d = JSON.parse(localStorage.getItem(this.key)); return d && Array.isArray(d.items) ? d : { items: [], promo: null }; } catch(e){ return { items: [], promo: null }; } },
+    write(data){ try { localStorage.setItem(this.key, JSON.stringify(data)); } catch(e){} },
+    add(item){
+      const data = this.read();
+      const ex = data.items.find(x => x.id === item.id && x.size === item.size);
+      if (ex) ex.qty = Math.min(10, ex.qty + item.qty); else data.items.push(item);
+      this.write(data);
+      return data.items.reduce((a,it) => a + it.qty, 0);
+    },
+    count(){ return this.read().items.reduce((a,it) => a + it.qty, 0); }
+  };
+  const badge = document.getElementById('cartBadge');
+  function refreshBadge(){ const c = CartStore.count(); if (badge) badge.textContent = c; }
+  function bumpBadge(){
+    badge.classList.remove('bump'); void badge.offsetWidth; badge.classList.add('bump');
+    setTimeout(() => badge.classList.remove('bump'), 300);
+  }
+
+  // Shared favorites storage (localStorage 'kl-favorites'), used across Shop / Product / Favorites pages
+  const FavStore = {
+    key: 'kl-favorites',
+    read(){ try { const d = JSON.parse(localStorage.getItem(this.key)); return Array.isArray(d) ? d : []; } catch(e){ return []; } },
+    write(items){ try { localStorage.setItem(this.key, JSON.stringify(items)); } catch(e){} },
+    has(id){ return this.read().some(x => x.id === id); },
+    toggle(item){
+      let items = this.read();
+      const i = items.findIndex(x => x.id === item.id);
+      let on;
+      if (i > -1) { items.splice(i,1); on = false; } else { items.push(item); on = true; }
+      this.write(items);
+      return on;
+    },
+    count(){ return this.read().length; }
+  };
+  const favBadge = document.getElementById('favBadge');
+  function refreshFavBadge(){
+    const c = FavStore.count();
+    if (!favBadge) return;
+    favBadge.hidden = c === 0;
+    favBadge.textContent = c;
+  }
+  // Mark hearts that are already favorited, on page load
+  document.querySelectorAll('.save-btn[data-item]').forEach(btn => {
+    try {
+      const item = JSON.parse(btn.dataset.item.replace(/&quot;/g,'"'));
+      if (FavStore.has(item.id)) { btn.classList.add('saved'); btn.setAttribute('aria-pressed','true'); }
+    } catch(e){}
+  });
+  refreshFavBadge();
+
+  window.toggleSave = function(btn){
+    if (btn.dataset.item) {
+      const item = JSON.parse(btn.dataset.item.replace(/&quot;/g,'"'));
+      const on = FavStore.toggle(item);
+      btn.classList.toggle('saved', on);
+      btn.setAttribute('aria-pressed', on);
+      refreshFavBadge();
+      return;
+    }
+    const on = btn.classList.toggle('saved');
+    btn.setAttribute('aria-pressed', on);
+  };
+  window.addToCart = function(btn){
+    const item = JSON.parse(btn.dataset.item.replace(/&quot;/g,'"'));
+    CartStore.add(item);
+    refreshBadge();
+    bumpBadge();
+  };
+  window.bumpCart = function(btn){ bumpBadge(); }; // New Arrivals row has no priced data yet, so this just animates the badge
+  // Simulated load: swap the skeleton grid for the real one after a short delay
+  setTimeout(() => {
+    const sk = document.getElementById('skeletonGrid'), real = document.getElementById('productGrid');
+    if (sk) sk.style.display = 'none';
+    if (real) real.style.display = '';
+  }, 700);
+  refreshBadge();
+
+  // Product filtering (New / Sale / Under $100, combined with AND).
+  // Reads each card's badge and price straight from the DOM.
+  const cards = [...document.querySelectorAll('#productGrid .card')].map(el => ({
+    el,
+    new: !!el.querySelector('.tag.new'),
+    sale: !!el.querySelector('.tag.sale'),
+    gender: el.dataset.gender || '',
+    price: parseFloat((el.querySelector('.price.now') || el.querySelector('.price')).textContent.replace('$',''))
+  }));
+  const chips = [...document.querySelectorAll('.chip[data-filter]')];
+  const emptyState = document.getElementById('emptyState');
+  const countEl = document.getElementById('filterCount');
+  let activeOrder = [];
+  function applyFilters(){
+    const on = new Set(activeOrder);
+    let shown = 0;
+    cards.forEach(c => {
+      const ok = (!on.has('new') || c.new) && (!on.has('sale') || c.sale) && (!on.has('under100') || c.price < 100) && (!on.has('men') || c.gender === 'men') && (!on.has('women') || c.gender === 'women');
+      c.el.style.display = ok ? '' : 'none';
+      if (ok) shown++;
+    });
+    emptyState.classList.toggle('show', shown === 0);
+    countEl.textContent = shown + (shown === 1 ? ' pair' : ' pairs');
+    chips.forEach(ch => ch.setAttribute('aria-pressed', on.has(ch.dataset.filter)));
+    document.getElementById('undoFilter').style.display = activeOrder.length > 1 ? '' : 'none';
+  }
+  chips.forEach(ch => ch.addEventListener('click', () => {
+    const f = ch.dataset.filter;
+    activeOrder = activeOrder.includes(f) ? activeOrder.filter(x => x !== f) : [...activeOrder, f];
+    applyFilters();
+  }));
+  // Pre-filter from the nav / category tiles: ?category=men|women or ?filter=new|sale
+  (function applyFromQuery(){
+    const q = new URLSearchParams(location.search);
+    const cat = q.get('category'), f = q.get('filter');
+    if (cat === 'men' || cat === 'women') activeOrder.push(cat);
+    if (f === 'new' || f === 'sale') activeOrder.push(f);
+    if (activeOrder.length) applyFilters();
+  })();
+  document.getElementById('clearFilters').addEventListener('click', () => { activeOrder = []; applyFilters(); });
+  document.getElementById('undoFilter').addEventListener('click', () => { activeOrder.pop(); applyFilters(); });
+  applyFilters();
+</script>
+
+</body>
+</html>

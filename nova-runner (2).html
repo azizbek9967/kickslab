@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nova Runner — Kicks Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0B0B0D;
+    --bg-alt: #141417;
+    --bg-alt-2: #1B1B1F;
+    --line: rgba(244,244,242,0.09);
+    --text: #F4F4F2;
+    --text-muted: #8D8D97;
+    --accent: #2E5EFF;
+    --accent-dim: #1C3FBF;
+    --accent-soft: rgba(46,94,255,0.16);
+    --heading: #FFFFFF;
+    --media-bg: #141417;
+    --media-bg-2: #1B1B1F;
+    --nav-glass: rgba(11,11,13,0.66);
+
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 16px;
+
+    --sp-1: 4px;
+    --sp-2: 8px;
+    --sp-3: 12px;
+    --sp-4: 16px;
+    --sp-6: 24px;
+    --sp-8: 32px;
+    --sp-12: 48px;
+    --sp-16: 64px;
+    --sp-24: 96px;
+
+    --shadow-sm: 0 8px 20px -8px rgba(46,94,255,0.30);
+    --shadow-md: 0 20px 44px -14px rgba(46,94,255,0.38);
+    --shadow-lg: 0 30px 70px -20px rgba(46,94,255,0.45);
+
+    --ease: cubic-bezier(.22,1,.36,1);
+  }
+
+  /* Light mode: page chrome (nav, cards, sidebar, text) switches;
+     photography panels (.hero-graphic, .card-media, .arrival-media)
+     stay on fixed dark tokens (--media-bg/--media-bg-2) in both modes
+     on purpose — a dark "spotlight" backdrop reads as premium product
+     photography whether the page around it is light or dark. */
+  :root[data-theme="light"]{
+    --bg: #F6F5F2;
+    --bg-alt: #FFFFFF;
+    --bg-alt-2: #ECEBE6;
+    --line: rgba(11,11,13,0.10);
+    --text: #3A3A40;
+    --text-muted: #74747C;
+    --heading: #0B0B0D;
+    --nav-glass: rgba(246,245,242,0.72);
+    --shadow-sm: 0 8px 20px -8px rgba(46,94,255,0.20);
+    --shadow-md: 0 20px 44px -14px rgba(46,94,255,0.26);
+    --shadow-lg: 0 30px 70px -20px rgba(46,94,255,0.32);
+  }
+
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  img,svg{display:block; max-width:100%;}
+  a{color:inherit; text-decoration:none;}
+  button{font-family:inherit; cursor:pointer; border:none; background:none; color:inherit;}
+  ul{list-style:none;}
+
+  .display{
+    font-family:'Bebas Neue', 'Inter', sans-serif;
+    letter-spacing:0.01em;
+    line-height:0.92;
+    font-weight:400;
+  }
+
+  .wrap{
+    max-width:1240px;
+    margin:0 auto;
+    padding:0 var(--sp-6);
+  }
+  @media (max-width:640px){
+    .wrap{padding:0 var(--sp-4);}
+  }
+
+  /* Focus visibility */
+  a:focus-visible, button:focus-visible, input:focus-visible{
+    outline:2px solid var(--accent);
+    outline-offset:3px;
+    border-radius:4px;
+  }
+
+  /* ============ NAV ============ */
+  header.nav{
+    position:sticky;
+    top:0;
+    z-index:100;
+    background:transparent;
+    border-bottom:1px solid transparent;
+    transition:background .4s var(--ease), border-color .4s var(--ease), backdrop-filter .4s var(--ease);
+  }
+  header.nav.scrolled{
+    background:rgba(11,11,13,0.66);
+    backdrop-filter:blur(16px) saturate(140%);
+    -webkit-backdrop-filter:blur(16px) saturate(140%);
+    border-bottom:1px solid var(--line);
+  }
+  .nav-inner{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:20px 0;
+  }
+  .logo{
+    font-family:'Bebas Neue', sans-serif;
+    font-size:1.6rem;
+    letter-spacing:0.03em;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .logo .dot{
+    width:9px; height:9px;
+    background:var(--accent);
+    border-radius:2px;
+    display:inline-block;
+    box-shadow:0 0 14px 2px rgba(46,94,255,0.7);
+  }
+  .nav-links{
+    display:flex;
+    gap:var(--sp-8);
+  }
+  .nav-links a{
+    position:relative;
+    font-size:0.94rem;
+    font-weight:500;
+    color:var(--text);
+    padding:6px 0;
+  }
+  .nav-links a::after{
+    content:"";
+    position:absolute;
+    left:0; bottom:0;
+    width:0%;
+    height:2px;
+    background:var(--accent);
+    transition:width .28s var(--ease);
+    border-radius:2px;
+  }
+  .nav-links a:hover::after,
+  .nav-links a:focus-visible::after{ width:100%; }
+  .nav-links a:hover{ color:var(--heading); }
+
+  .nav-actions{
+    display:flex;
+    align-items:center;
+    gap:var(--sp-4);
+  }
+  .icon-btn{
+    position:relative;
+    width:40px; height:40px;
+    display:flex; align-items:center; justify-content:center;
+    border-radius:var(--radius-sm);
+    color:var(--text);
+    transition:background .2s var(--ease), transform .2s var(--ease), color .2s var(--ease);
+  }
+  .icon-btn:hover{
+    background:var(--accent-soft);
+    color:var(--heading);
+    transform:translateY(-1px);
+  }
+  .icon-btn svg{width:19px; height:19px;}
+  .cart-badge{
+    position:absolute;
+    top:2px; right:2px;
+    min-width:16px; height:16px;
+    padding:0 3px;
+    border-radius:8px;
+    background:var(--accent);
+    color:#fff;
+    font-size:0.62rem;
+    font-weight:700;
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:0 0 0 2px var(--bg);
+    transition:transform .3s var(--ease);
+  }
+  .cart-badge.bump{ transform:scale(1.35); }
+
+  .nav-toggle{ display:none; }
+  @media (max-width:860px){
+    .nav-links{ display:none; }
+  }
+
+  .btn-primary{
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    background:var(--accent);
+    color:#fff;
+    font-weight:600;
+    font-size:1rem;
+    padding:15px 26px;
+    border-radius:var(--radius-sm);
+    box-shadow:var(--shadow-md);
+    transition:transform .25s var(--ease), box-shadow .25s var(--ease), background .25s var(--ease);
+  }
+  .btn-primary:hover{
+    transform:translateY(-3px);
+    box-shadow:var(--shadow-lg);
+    background:#4670ff;
+  }
+  .btn-primary svg{ width:16px; height:16px; transition:transform .25s var(--ease); }
+  .btn-primary:hover svg{ transform:translateX(3px); }
+
+  .btn-ghost{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    color:var(--text);
+    font-weight:600;
+    font-size:0.98rem;
+    padding:15px 8px;
+    border-bottom:1px solid var(--line);
+    transition:border-color .25s var(--ease), color .25s var(--ease), gap .25s var(--ease);
+  }
+  .btn-ghost:hover{
+    border-color:var(--accent);
+    color:var(--heading);
+    gap:12px;
+  }
+
+  /* ============ SHOP LINKS (nav + tiles) ============
+     Every element with [data-shop] is meant to open the Shop page pre-filtered:
+       Men      -> /shop?category=men
+       Women    -> /shop?category=women
+       New      -> /shop?filter=new     (the "New" chip below)
+       Sale     -> /shop?filter=sale    (the "Sale" chip below)
+     Not wired yet: hrefs are the future URLs; the Shop page reads the query
+     string and pre-selects the matching filter chip. */
+  .nav-links a[data-shop]{ position:relative; }
+  .nav-links a[data-shop]::before{
+    content:attr(data-hint);
+    position:absolute; top:calc(100% + 10px); left:50%;
+    transform:translate(-50%,-4px);
+    white-space:nowrap;
+    font-size:0.68rem; font-weight:700; letter-spacing:0.04em; text-transform:uppercase;
+    padding:5px 10px; border-radius:20px;
+    background:var(--accent-soft); color:#a9bcff;
+    border:1px solid rgba(46,94,255,0.4);
+    opacity:0; pointer-events:none;
+    transition:opacity .22s var(--ease), transform .22s var(--ease);
+  }
+  :root[data-theme="light"] .nav-links a[data-shop]::before{ color:var(--accent-dim); }
+  .nav-links a[data-shop]:hover::before,
+  .nav-links a[data-shop]:focus-visible::before{ opacity:1; transform:translate(-50%,0); }
+  .nav-links a .nav-arrow{
+    display:inline-block; width:10px; height:10px; margin-left:5px;
+    vertical-align:-1px; opacity:.45;
+    transition:opacity .2s var(--ease), transform .2s var(--ease);
+  }
+  .nav-links a:hover .nav-arrow{ opacity:1; transform:translate(2px,-2px); color:var(--accent); }
+
+  .tile-chip{
+    position:absolute; top:var(--sp-4); left:var(--sp-4); z-index:1;
+    display:inline-flex; align-items:center; gap:6px;
+    font-size:0.68rem; font-weight:700; letter-spacing:0.05em; text-transform:uppercase;
+    padding:5px 10px; border-radius:20px;
+    background:var(--accent-soft); color:#a9bcff;
+    border:1px solid rgba(46,94,255,0.4);
+  }
+  :root[data-theme="light"] .tile-chip{ color:var(--accent-dim); }
+  .tile-chip i{ width:6px; height:6px; border-radius:50%; background:var(--accent); display:inline-block; }
+
+  .section{ padding:var(--sp-24) 0; }
+  .section-head{
+    display:flex;
+    align-items:flex-end;
+    justify-content:space-between;
+    margin-bottom:var(--sp-12);
+    gap:var(--sp-6);
+    flex-wrap:wrap;
+  }
+  .section-head h2{
+    font-size:clamp(2rem,4vw,2.8rem);
+    color:var(--heading);
+  }
+  .section-head p{
+    color:var(--text-muted);
+    max-width:38ch;
+  }
+
+  
+  /* ============ PDP ============ */
+  .crumbs{display:flex;gap:8px;align-items:center;font-size:0.82rem;color:var(--text-muted);padding:var(--sp-6) 0 var(--sp-8);}
+  .crumbs a:hover{color:var(--heading);} .crumbs .cur{color:var(--heading);}
+  .pdp{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,0.95fr);gap:var(--sp-12);align-items:start;padding-bottom:var(--sp-16);}
+  @media (max-width:900px){.pdp{grid-template-columns:1fr;gap:var(--sp-8);}}
+
+  /* Gallery: pinned while the details column scrolls (desktop only) */
+  .gallery{position:sticky;top:96px;display:grid;grid-template-columns:84px 1fr;gap:var(--sp-3);align-self:start;}
+  .gallery-main{position:relative;aspect-ratio:1/1;border-radius:var(--radius-md);border:1px solid var(--line);overflow:hidden;
+    display:flex;align-items:center;justify-content:center;
+    background:radial-gradient(circle at 75% 20%,rgba(46,94,255,0.22),transparent 60%),var(--media-bg-2);}
+  .gallery-main svg{width:86%;transition:transform .5s var(--ease);}
+  .gallery-main:hover svg{transform:scale(1.05);}
+  .gallery-main.swap svg{animation:fadeIn .35s var(--ease);}
+  @keyframes fadeIn{from{opacity:0;transform:scale(.97);}to{opacity:1;transform:none;}}
+  .gallery-count{position:absolute;bottom:12px;left:12px;font-size:0.72rem;font-weight:600;padding:4px 10px;border-radius:20px;background:rgba(11,11,13,0.55);color:#F4F4F2;border:1px solid rgba(244,244,242,0.14);}
+  .gallery-tag{position:absolute;top:12px;left:12px;font-size:0.68rem;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;padding:5px 10px;border-radius:20px;background:rgba(46,94,255,0.16);color:#a9bcff;border:1px solid rgba(46,94,255,0.4);}
+  .save-btn{position:absolute;top:10px;right:10px;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(11,11,13,0.55);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);color:#F4F4F2;border:1px solid rgba(244,244,242,0.14);transition:transform .2s var(--ease),color .2s var(--ease);}
+  .save-btn:hover{transform:scale(1.1);} .save-btn svg{width:18px;height:18px;fill:transparent;stroke:currentColor;stroke-width:2;transition:fill .2s var(--ease);}
+  .save-btn.saved{color:#ff5a7a;} .save-btn.saved svg{fill:currentColor;}
+  .thumbs{display:flex;flex-direction:column;gap:var(--sp-3);}
+  .thumb{aspect-ratio:1/1;border-radius:var(--radius-sm);border:1px solid var(--line);overflow:hidden;display:flex;align-items:center;justify-content:center;padding:6px;
+    background:radial-gradient(circle at 75% 20%,rgba(46,94,255,0.18),transparent 60%),var(--media-bg-2);
+    transition:border-color .2s var(--ease),transform .2s var(--ease),box-shadow .2s var(--ease);}
+  .thumb:hover{transform:translateY(-2px);border-color:rgba(46,94,255,0.5);}
+  .thumb.active{border-color:var(--accent);box-shadow:var(--shadow-sm);}
+  .thumb svg{width:100%;}
+  @media (max-width:900px){
+    .gallery{position:static;grid-template-columns:1fr;}
+    .gallery-main{order:1;} .thumbs{order:2;flex-direction:row;}
+    .thumb{flex:1;max-width:96px;}
+  }
+
+  .info .brand{font-size:0.8rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent);margin-bottom:var(--sp-2);}
+  :root[data-theme="light"] .info .brand{color:var(--accent-dim);}
+  .info h1{font-size:clamp(3rem,6vw,4.6rem);color:var(--heading);}
+  .rating{display:flex;align-items:center;gap:var(--sp-3);margin-top:var(--sp-4);flex-wrap:wrap;}
+  .stars{position:relative;display:inline-block;line-height:0;}
+  .stars svg{width:18px;height:18px;flex:none;}
+  .stars-base,.stars-fill{display:flex;gap:2px;}
+  .stars-base{color:rgba(141,141,151,0.35);fill:currentColor;}
+  .stars-fill{position:absolute;left:0;top:0;overflow:hidden;color:var(--accent);fill:currentColor;white-space:nowrap;}
+  .stars.sm svg{width:14px;height:14px;}
+  .rating-score{font-weight:700;color:var(--heading);}
+  .rating a{font-size:0.9rem;color:var(--text-muted);border-bottom:1px solid var(--line);transition:color .2s var(--ease),border-color .2s var(--ease);}
+  .rating a:hover{color:var(--heading);border-color:var(--accent);}
+  .price-row{display:flex;align-items:baseline;gap:var(--sp-3);margin-top:var(--sp-6);}
+  .pdp-price{font-size:2rem;font-weight:700;color:var(--heading);}
+  .price-note{font-size:0.88rem;color:var(--text-muted);}
+  .lead{margin-top:var(--sp-4);color:var(--text-muted);max-width:52ch;}
+  .opt-head{display:flex;justify-content:space-between;align-items:baseline;margin:var(--sp-8) 0 var(--sp-3);font-size:0.9rem;}
+  .opt-head b{color:var(--heading);font-weight:600;} .opt-head a{color:var(--text-muted);border-bottom:1px solid var(--line);} .opt-head a:hover{color:var(--heading);}
+  .swatches{display:flex;gap:var(--sp-3);}
+  .swatch{width:44px;height:44px;border-radius:50%;border:2px solid transparent;padding:3px;transition:border-color .2s var(--ease);}
+  .swatch i{display:block;width:100%;height:100%;border-radius:50%;border:1px solid var(--line);}
+  .swatch[aria-pressed="true"]{border-color:var(--accent);}
+  .sizes{display:grid;grid-template-columns:repeat(auto-fill,minmax(64px,1fr));gap:var(--sp-2);}
+  .size{padding:12px 0;border-radius:var(--radius-sm);border:1px solid var(--line);font-weight:600;font-size:0.9rem;color:var(--text);transition:background .2s var(--ease),border-color .2s var(--ease),color .2s var(--ease);}
+  .size:hover:not(:disabled){border-color:rgba(46,94,255,0.6);}
+  .size[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#fff;}
+  .size.out{opacity:.35;text-decoration:line-through;cursor:not-allowed;}
+  .size-error{display:none;margin-top:var(--sp-3);font-size:0.85rem;color:#ff7a92;} .size-error.show{display:block;}
+  .buy{display:flex;gap:var(--sp-3);margin-top:var(--sp-8);}
+  .buy .btn-primary{flex:1;justify-content:center;}
+
+  .opt-label{font-size:0.9rem;margin-bottom:var(--sp-2);color:var(--text-muted);}
+  .size{position:relative;}
+  .size.low::after{content:"";position:absolute;top:6px;right:6px;width:6px;height:6px;border-radius:50%;background:#ffb020;}
+  .size.low[aria-pressed="true"]::after{background:#fff;}
+  .size-error.show{animation:shake .4s var(--ease);}
+  @keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-5px);}75%{transform:translateX(5px);}}
+
+  .qty-row{display:flex;align-items:flex-end;justify-content:space-between;gap:var(--sp-6);margin-top:var(--sp-8);flex-wrap:wrap;}
+  .stepper{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:var(--radius-sm);overflow:hidden;background:var(--bg-alt);}
+  .stepper button{width:44px;height:44px;display:flex;align-items:center;justify-content:center;color:var(--text);transition:background .2s var(--ease),color .2s var(--ease);}
+  .stepper button:hover:not(:disabled){background:var(--accent-soft);color:var(--heading);}
+  .stepper button:disabled{opacity:.3;cursor:not-allowed;}
+  .stepper svg{width:14px;height:14px;}
+  .stepper output{min-width:48px;text-align:center;font-weight:700;color:var(--heading);font-variant-numeric:tabular-nums;}
+  .stock{display:inline-flex;align-items:center;gap:10px;font-size:0.92rem;font-weight:600;color:var(--text-muted);padding-bottom:12px;}
+  .stock i{width:9px;height:9px;border-radius:50%;background:var(--text-muted);flex:none;}
+  .stock[data-state="ok"]{color:var(--text);} .stock[data-state="ok"] i{background:#22c58b;}
+  .stock[data-state="low"]{color:#ffb020;} :root[data-theme="light"] .stock[data-state="low"]{color:#b36b00;}
+  .stock[data-state="low"] i{background:#ffb020;animation:stockPulse 1.8s infinite;}
+  @keyframes stockPulse{0%{box-shadow:0 0 0 0 rgba(255,176,32,.6);}70%{box-shadow:0 0 0 8px rgba(255,176,32,0);}100%{box-shadow:0 0 0 0 rgba(255,176,32,0);}}
+
+  /* Sticky Add to Cart bar */
+  .buy-bar{
+    position:sticky;bottom:0;z-index:20;
+    display:flex;align-items:center;gap:var(--sp-4);
+    margin:var(--sp-6) calc(var(--sp-4) * -1) 0;
+    padding:var(--sp-4);
+    padding-bottom:calc(var(--sp-4) + env(safe-area-inset-bottom,0px));
+    background:var(--nav-glass);
+    backdrop-filter:blur(16px) saturate(140%);-webkit-backdrop-filter:blur(16px) saturate(140%);
+    border-top:1px solid var(--line);
+  }
+  .buy-sum{display:flex;flex-direction:column;line-height:1.25;min-width:96px;}
+  .buy-sum-label{font-size:0.74rem;color:var(--text-muted);}
+  .buy-sum b{font-size:1.15rem;color:var(--heading);}
+  .btn-cart{
+    position:relative;flex:1;height:58px;overflow:hidden;
+    background:var(--accent);color:#fff;border-radius:var(--radius-sm);
+    font-weight:800;font-size:1.05rem;letter-spacing:0.08em;text-transform:uppercase;
+    box-shadow:var(--shadow-md);
+    transition:transform .25s var(--ease),box-shadow .25s var(--ease),background .3s var(--ease);
+  }
+  .btn-cart:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg);background:#4670ff;}
+  .btn-cart:active{transform:translateY(0) scale(.99);}
+  .btn-cart .lbl{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:10px;transition:transform .35s var(--ease),opacity .25s var(--ease);}
+  .btn-cart .lbl svg{width:18px;height:18px;}
+  .btn-cart .lbl-done{transform:translateY(100%);opacity:0;}
+  .btn-cart.added{background:#1FB57A;box-shadow:0 20px 44px -14px rgba(31,181,122,.5);}
+  .btn-cart.added .lbl-add{transform:translateY(-100%);opacity:0;}
+  .btn-cart.added .lbl-done{transform:none;opacity:1;}
+  @media (max-width:900px){.buy-bar{margin-left:calc(var(--sp-4) * -1);margin-right:calc(var(--sp-4) * -1);}}
+  @media (prefers-reduced-motion:reduce){.stock[data-state="low"] i,.size-error.show{animation:none;}.btn-cart .lbl{transition:opacity .001ms;}}
+
+  /* ============ OUT OF STOCK (PDP) ============ */
+  body.oos .gallery-main svg,body.oos .thumb svg{filter:grayscale(.7) brightness(.8);}
+  .oos-banner{display:none;align-items:center;gap:10px;background:rgba(141,141,151,0.14);border:1px solid var(--line);border-radius:var(--radius-sm);padding:12px 16px;margin:var(--sp-4) 0 var(--sp-2);font-size:0.9rem;color:var(--text);}
+  body.oos .oos-banner{display:flex;}
+  .oos-banner svg{width:18px;height:18px;color:var(--text-muted);flex:none;}
+  body.oos .sizes{opacity:.55;pointer-events:none;}
+  body.oos .qty-row{opacity:.4;pointer-events:none;}
+  body.oos .btn-cart{display:none;}
+  .btn-notify{display:none;position:relative;flex:1;height:58px;border-radius:var(--radius-sm);background:var(--bg-alt-2);border:1px solid var(--line);color:var(--heading);font-weight:800;font-size:1.05rem;letter-spacing:0.06em;text-transform:uppercase;align-items:center;justify-content:center;gap:10px;transition:border-color .2s var(--ease),background .2s var(--ease);}
+  .btn-notify:hover{border-color:var(--accent);background:var(--accent-soft);}
+  .btn-notify svg{width:18px;height:18px;}
+  body.oos .btn-notify{display:flex;}
+  .btn-notify.sent{background:#1FB57A;border-color:#1FB57A;color:#fff;}
+  .demo-toggle{position:fixed;bottom:14px;right:14px;z-index:40;font-size:0.72rem;padding:8px 12px;border-radius:20px;background:var(--bg-alt);border:1px solid var(--line);color:var(--text-muted);box-shadow:var(--shadow-sm);}
+  .demo-toggle:hover{color:var(--heading);border-color:var(--accent);}
+  .perks{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-3);margin-top:var(--sp-6);font-size:0.86rem;color:var(--text-muted);}
+  .perks li{display:flex;gap:10px;align-items:center;} .perks svg{width:16px;height:16px;color:var(--accent);flex:none;}
+  .acc{margin-top:var(--sp-8);border-top:1px solid var(--line);}
+  .acc details{border-bottom:1px solid var(--line);}
+  .acc summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;padding:var(--sp-4) 0;font-weight:600;color:var(--heading);}
+  .acc summary::-webkit-details-marker{display:none;}
+  .acc summary::after{content:"+";font-size:1.3rem;color:var(--text-muted);transition:transform .25s var(--ease);}
+  .acc details[open] summary::after{transform:rotate(45deg);color:var(--accent);}
+  .acc .acc-body{padding:0 0 var(--sp-6);color:var(--text-muted);font-size:0.95rem;}
+  .acc ul.dots li{position:relative;padding-left:18px;margin-bottom:6px;} .acc ul.dots li::before{content:"";position:absolute;left:0;top:.65em;width:6px;height:6px;border-radius:2px;background:var(--accent);}
+
+  .reviews-grid{display:grid;grid-template-columns:320px 1fr;gap:var(--sp-12);}
+  @media (max-width:900px){.reviews-grid{grid-template-columns:1fr;}}
+  .big-score{font-family:'Bebas Neue',sans-serif;font-size:5.5rem;line-height:.9;color:var(--heading);}
+  .bar-row{display:grid;grid-template-columns:28px 1fr 40px;gap:10px;align-items:center;font-size:0.82rem;color:var(--text-muted);margin-top:8px;}
+  .bar{height:6px;border-radius:3px;background:var(--bg-alt-2);overflow:hidden;} .bar i{display:block;height:100%;background:var(--accent);border-radius:3px;} .bar-n{text-align:right;}
+  .review-list{display:grid;gap:var(--sp-4);}
+  .review{background:var(--bg-alt);border:1px solid var(--line);border-radius:var(--radius-md);padding:var(--sp-6);}
+  .review-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--sp-3);}
+  .review-when,.review-meta{font-size:0.8rem;color:var(--text-muted);}
+  .review h4{color:var(--heading);font-size:1rem;margin-bottom:4px;} .review p{color:var(--text);font-size:0.95rem;margin-bottom:var(--sp-3);}
+  @media (prefers-reduced-motion:reduce){.gallery-main.swap svg{animation:none;} .gallery-main svg,.thumb{transition:none;}}
+  /* ============ FOOTER ============ */
+  footer{
+    border-top:1px solid var(--line);
+    padding:var(--sp-16) 0 var(--sp-8);
+  }
+  .footer-top{
+    display:grid;
+    grid-template-columns:1.4fr 1fr 1fr 1.2fr;
+    gap:var(--sp-8);
+    padding-bottom:var(--sp-12);
+  }
+  @media (max-width:800px){
+    .footer-top{ grid-template-columns:1fr 1fr; }
+  }
+  .footer-top h5{
+    font-size:0.85rem;
+    color:var(--text-muted);
+    font-weight:600;
+    margin-bottom:var(--sp-4);
+  }
+  .footer-top ul li{ margin-bottom:10px; }
+  .footer-top ul li a{
+    color:var(--text);
+    font-size:0.92rem;
+    position:relative;
+  }
+  .footer-top ul li a:hover{ color:var(--accent); }
+
+  .newsletter{
+    display:flex;
+    margin-top:var(--sp-4);
+    border:1px solid var(--line);
+    border-radius:var(--radius-sm);
+    overflow:hidden;
+    max-width:340px;
+  }
+  .newsletter input{
+    flex:1;
+    background:transparent;
+    border:none;
+    padding:12px 14px;
+    color:var(--text);
+    font-size:0.9rem;
+  }
+  .newsletter input::placeholder{ color:var(--text-muted); }
+  .newsletter button{
+    background:var(--accent);
+    color:#fff;
+    padding:0 18px;
+    font-weight:600;
+    font-size:0.88rem;
+    transition:background .2s var(--ease);
+  }
+  .newsletter button:hover{ background:#4670ff; }
+
+  .footer-bottom{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding-top:var(--sp-6);
+    border-top:1px solid var(--line);
+    color:var(--text-muted);
+    font-size:0.82rem;
+    flex-wrap:wrap;
+    gap:var(--sp-4);
+  }
+  .socials{ display:flex; gap:var(--sp-3); }
+  .socials a{
+    width:32px; height:32px;
+    border:1px solid var(--line);
+    border-radius:var(--radius-sm);
+    display:flex; align-items:center; justify-content:center;
+    transition:border-color .2s var(--ease), color .2s var(--ease), transform .2s var(--ease);
+  }
+  .socials a:hover{ border-color:var(--accent); color:var(--accent); transform:translateY(-2px); }
+  .socials a svg{ width:14px; height:14px; }
+
+  @media (prefers-reduced-motion:reduce){
+    *{ animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important; }
+  }
+
+</style>
+</head>
+<body>
+<header class="nav" id="siteNav">
+  <div class="wrap nav-inner">
+    <a href="kicks-lab.html" class="logo"><span class="dot"></span>KICKS LAB</a>
+    <nav class="nav-links">
+      <!-- Each link opens the Shop page pre-filtered (see SHOP LINKS note in CSS). -->
+      <a href="/shop?category=men" data-shop="category:men" data-hint="Shop / Men">Men<svg class="nav-arrow" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M2 8L8 2M3.5 2H8V6.5"/></svg></a>
+      <a href="/shop?category=women" data-shop="category:women" data-hint="Shop / Women">Women<svg class="nav-arrow" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M2 8L8 2M3.5 2H8V6.5"/></svg></a>
+      <a href="/shop?filter=new" data-shop="filter:new" data-hint="Shop / New">New Drops<svg class="nav-arrow" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M2 8L8 2M3.5 2H8V6.5"/></svg></a>
+      <a href="/shop?filter=sale" data-shop="filter:sale" data-hint="Shop / Sale">Sale<svg class="nav-arrow" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M2 8L8 2M3.5 2H8V6.5"/></svg></a>
+    </nav>
+    <div class="nav-actions">
+      <button class="icon-btn" aria-label="Search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      </button>
+      <a href="favorites.html" class="icon-btn" aria-label="Favorites" id="favBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 20.5s-7.5-4.6-9.3-9.4C1.5 7.6 3.6 4.5 6.8 4.5c2 0 3.7 1.1 5.2 3 1.5-1.9 3.2-3 5.2-3 3.2 0 5.3 3.1 4.1 6.6C19.5 15.9 12 20.5 12 20.5z"/></svg><span class="cart-badge" id="favBadge" hidden>0</span></a><a href="cart.html" class="icon-btn" aria-label="Cart" id="cartBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6h15l-1.5 9h-12z"/><path d="M6 6L4 2H2"/><circle cx="9.5" cy="20" r="1.4"/><circle cx="17.5" cy="20" r="1.4"/></svg>
+        <span class="cart-badge" id="cartBadge">3</span>
+      </a>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <nav class="crumbs" aria-label="Breadcrumb"><a href="kicks-lab.html">Home</a><span>/</span><a href="/shop">Shop</a><span>/</span><span class="cur">Nova Runner</span></nav>
+
+  <section class="pdp">
+    <!-- Sticky gallery: stays pinned on desktop while the right column scrolls -->
+    <div class="gallery" id="gallery">
+      <div class="thumbs" role="group" aria-label="Product images"><button class="thumb active" type="button" data-i="0" aria-label="Side view" aria-current="true"><svg viewBox="0 0 240 140" fill="none" role="img" aria-label="Nova Runner sneaker"><g >
+<ellipse cx="120" cy="126" rx="98" ry="7" fill="#000" opacity=".4"/>
+<path d="M22 96 C18 82 24 74 40 72 L74 66 C88 62 96 48 100 34 L128 30 C140 46 158 62 186 68 C214 74 226 84 226 98 L226 106 L22 106Z" fill="#2E5EFF"/>
+<path d="M100 34 L128 30 C130 34 132 38 136 42 L108 52 C104 46 101 40 100 34Z" fill="#1C3FBF"/>
+<path d="M22 96 C40 92 60 90 80 86 L110 76 C150 88 200 90 226 98 L226 106 L22 106Z" fill="#F4F4F2" opacity=".55"/>
+<path d="M112 40 L120 46 M120 36 L128 42 M128 46 L136 52 M118 54 L126 60 M132 58 L140 64" stroke="#F4F4F2" stroke-width="3" stroke-linecap="round"/>
+<path d="M70 92 C100 82 140 84 176 94" stroke="#F4F4F2" stroke-width="5" stroke-linecap="round"/>
+<path d="M16 104 L232 104 L232 118 C232 122 228 124 224 124 L30 124 C20 124 14 118 16 104Z" fill="#F4F4F2"/>
+<path d="M16 109 L232 109" stroke="#000" stroke-opacity=".14" stroke-width="2"/>
+<path d="M40 124 L44 118 M70 124 L74 118 M100 124 L104 118 M130 124 L134 118 M160 124 L164 118 M190 124 L194 118" stroke="#8D8D97" stroke-width="2" stroke-linecap="round"/>
+</g></svg></button><button class="thumb" type="button" data-i="1" aria-label="Top view" aria-current="false"><svg viewBox="0 0 240 140" fill="none" role="img" aria-label="Nova Runner top view">
+<ellipse cx="120" cy="124" rx="70" ry="6" fill="#000" opacity=".35"/>
+<path d="M30 70 C30 52 52 46 80 46 L150 48 C190 50 212 58 212 70 C212 84 190 92 150 94 L80 94 C52 94 30 88 30 70Z" fill="#2E5EFF"/>
+<path d="M30 70 C30 58 44 52 62 50 L62 90 C44 88 30 82 30 70Z" fill="#1C3FBF"/>
+<path d="M92 50 L92 90 M108 50 L108 90 M124 49 L124 91 M140 50 L140 90" stroke="#F4F4F2" stroke-width="4" stroke-linecap="round"/>
+<path d="M92 60 L140 60 M92 80 L140 80" stroke="#F4F4F2" stroke-width="2" opacity=".6"/>
+<path d="M156 52 C190 54 208 60 208 70 C208 80 190 86 156 88" stroke="#F4F4F2" stroke-width="3" opacity=".7"/>
+</svg></button><button class="thumb" type="button" data-i="2" aria-label="Outsole" aria-current="false"><svg viewBox="0 0 240 140" fill="none" role="img" aria-label="Nova Runner outsole">
+<path d="M28 70 C28 48 52 40 80 40 L150 42 C196 44 214 56 214 70 C214 84 196 96 150 98 L80 100 C52 100 28 92 28 70Z" fill="#F4F4F2"/>
+<path d="M40 70 C40 54 58 48 82 48 L150 50 C186 52 202 60 202 70 C202 80 186 88 150 90 L82 92 C58 92 40 86 40 70Z" stroke="#8D8D97" stroke-width="2"/>
+<path d="M70 52 L70 88 M90 50 L90 90 M110 50 L110 90 M130 50 L130 90 M150 52 L150 88 M170 56 L170 84" stroke="#2E5EFF" stroke-width="5" stroke-linecap="round"/>
+<circle cx="52" cy="70" r="6" fill="#2E5EFF"/><circle cx="190" cy="70" r="5" fill="#2E5EFF"/>
+</svg></button><button class="thumb" type="button" data-i="3" aria-label="Heel detail" aria-current="false"><svg viewBox="0 0 240 140" fill="none" role="img" aria-label="Nova Runner heel and lacing detail">
+<circle cx="150" cy="70" r="58" fill="#1B1B1F" stroke="#2E5EFF" stroke-opacity=".35" stroke-width="2"/>
+<path d="M92 100 C92 70 110 46 146 34 L190 30 L196 100Z" fill="#2E5EFF"/>
+<path d="M146 34 L190 30 L196 52 L150 62Z" fill="#1C3FBF"/>
+<path d="M112 58 L150 70 M116 74 L154 86 M124 46 L160 56" stroke="#F4F4F2" stroke-width="5" stroke-linecap="round"/>
+<path d="M92 100 L196 100 L196 112 L92 112Z" fill="#F4F4F2"/>
+<path d="M96 88 C120 84 160 84 194 90" stroke="#F4F4F2" stroke-width="5" stroke-linecap="round" opacity=".9"/>
+</svg></button></div>
+      <div class="gallery-main" id="galleryMain">
+        <span class="gallery-tag">New</span>
+        <button class="save-btn" type="button" aria-pressed="false" aria-label="Save Nova Runner" onclick="toggleFav(this)"><svg viewBox="0 0 24 24" stroke-linejoin="round"><path d="M12 20.5s-7.5-4.6-9.3-9.4C1.5 7.6 3.6 4.5 6.8 4.5c2 0 3.7 1.1 5.2 3 1.5-1.9 3.2-3 5.2-3 3.2 0 5.3 3.1 4.1 6.6C19.5 15.9 12 20.5 12 20.5z"/></svg></button>
+        <div id="mainImg"><svg viewBox="0 0 240 140" fill="none" role="img" aria-label="Nova Runner sneaker"><g >
+<ellipse cx="120" cy="126" rx="98" ry="7" fill="#000" opacity=".4"/>
+<path d="M22 96 C18 82 24 74 40 72 L74 66 C88 62 96 48 100 34 L128 30 C140 46 158 62 186 68 C214 74 226 84 226 98 L226 106 L22 106Z" fill="#2E5EFF"/>
+<path d="M100 34 L128 30 C130 34 132 38 136 42 L108 52 C104 46 101 40 100 34Z" fill="#1C3FBF"/>
+<path d="M22 96 C40 92 60 90 80 86 L110 76 C150 88 200 90 226 98 L226 106 L22 106Z" fill="#F4F4F2" opacity=".55"/>
+<path d="M112 40 L120 46 M120 36 L128 42 M128 46 L136 52 M118 54 L126 60 M132 58 L140 64" stroke="#F4F4F2" stroke-width="3" stroke-linecap="round"/>
+<path d="M70 92 C100 82 140 84 176 94" stroke="#F4F4F2" stroke-width="5" stroke-linecap="round"/>
+<path d="M16 104 L232 104 L232 118 C232 122 228 124 224 124 L30 124 C20 124 14 118 16 104Z" fill="#F4F4F2"/>
+<path d="M16 109 L232 109" stroke="#000" stroke-opacity=".14" stroke-width="2"/>
+<path d="M40 124 L44 118 M70 124 L74 118 M100 124 L104 118 M130 124 L134 118 M160 124 L164 118 M190 124 L194 118" stroke="#8D8D97" stroke-width="2" stroke-linecap="round"/>
+</g></svg></div>
+        <span class="gallery-count" id="galleryCount">Side view · 1 / 4</span>
+      </div>
+    </div>
+
+    <div class="info">
+      <div class="brand">Kicks Lab</div>
+      <h1 class="display">Nova Runner</h1>
+      <div class="rating">
+        <span class="stars" role="img" aria-label="Rated 4.6 out of 5"><span class="stars-base"><svg viewBox="0 0 24 24"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.400 6.100 20.500l1.200-6.500L2.500 9.400l6.600-.9z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.400 6.100 20.500l1.200-6.500L2.500 9.400l6.600-.9z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.400 6.100 20.500l1.200-6.500L2.500 9.400l6.600-.9z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.400 6.100 20.500l1.200-6.500L2.500 9.400l6.600-.9z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.400 6.100 20.500l1.200-6.500L2.500 9.400l6.600-.9z"/></svg></span><span class="stars-fill" style="width:91%"><svg viewBox="0 0 24 24"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.400 6.100 20.500l1.200-6.500L2.500 9.400l6.600-.9z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.400 6.100 20.500l1.200-6.500L2.500 9.400l6.600-.9z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.400 6.100 20.500l1.200-6.500L2.500 9.400l6.600-.9z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.400 6.100 20.500l1.200-6.500L2.500 9.400l6.600-.9z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.400 6.100 20.500l1.200-6.500L2.500 9.400l6.600-.9z"/></svg></span></span>
+        <span class="rating-score">4.6</span>
+        <a href="#reviews">1,248 reviews</a>
+      </div>
+      <div class="price-row"><span class="pdp-price">$140</span><span class="price-note">Free shipping over $100</span></div>
+
+      <div class="opt-head"><span>Colorway: <b id="colorName">Cobalt / Bone</b></span></div>
+      <div class="swatches" role="group" aria-label="Colorway">
+        <button class="swatch" type="button" aria-pressed="true" aria-label="Cobalt / Bone" data-name="Cobalt / Bone"><i style="background:linear-gradient(135deg,#2E5EFF 50%,#F4F4F2 50%)"></i></button>
+        <button class="swatch" type="button" aria-pressed="false" aria-label="Blackout" data-name="Blackout"><i style="background:linear-gradient(135deg,#141417 50%,#2E5EFF 50%)"></i></button>
+        <button class="swatch" type="button" aria-pressed="false" aria-label="Slate / Cobalt" data-name="Slate / Cobalt"><i style="background:linear-gradient(135deg,#8D8D97 50%,#2E5EFF 50%)"></i></button>
+      </div>
+
+      <div class="opt-head"><span>Size (US Men's): <b id="sizeName">Select a size</b></span><a href="#size-guide" id="sizeGuide">Size Guide</a></div>
+      <div class="sizes" id="sizes" role="group" aria-label="Size"><button class="size" type="button" data-size="6" data-stock="9" aria-pressed="false">6</button><button class="size" type="button" data-size="6.5" data-stock="6" aria-pressed="false">6.5</button><button class="size" type="button" data-size="7" data-stock="12" aria-pressed="false">7</button><button class="size out" type="button" data-size="7.5" data-stock="0" aria-pressed="false" disabled>7.5</button><button class="size" type="button" data-size="8" data-stock="7" aria-pressed="false">8</button><button class="size low" type="button" data-size="8.5" data-stock="3" aria-pressed="false">8.5</button><button class="size low" type="button" data-size="9" data-stock="3" aria-pressed="false">9</button><button class="size" type="button" data-size="9.5" data-stock="8" aria-pressed="false">9.5</button><button class="size" type="button" data-size="10" data-stock="11" aria-pressed="false">10</button><button class="size" type="button" data-size="10.5" data-stock="5" aria-pressed="false">10.5</button><button class="size low" type="button" data-size="11" data-stock="2" aria-pressed="false">11</button><button class="size" type="button" data-size="11.5" data-stock="9" aria-pressed="false">11.5</button><button class="size" type="button" data-size="12" data-stock="6" aria-pressed="false">12</button><button class="size out" type="button" data-size="12.5" data-stock="0" aria-pressed="false" disabled>12.5</button><button class="size" type="button" data-size="13" data-stock="4" aria-pressed="false">13</button></div>
+      <div class="size-error" id="sizeError" role="alert">Pick a size to add this pair to your cart.</div>
+
+      <div class="qty-row">
+        <div>
+          <div class="opt-label">Quantity</div>
+          <div class="stepper" role="group" aria-label="Quantity">
+            <button type="button" id="qtyMinus" aria-label="Decrease quantity"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+            <output id="qtyVal" aria-live="polite">1</output>
+            <button type="button" id="qtyPlus" aria-label="Increase quantity"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+          </div>
+        </div>
+        <div class="stock" id="stock" data-state="none" aria-live="polite"><i></i><span id="stockText">Select a size to see availability</span></div>
+      </div>
+
+      <div class="oos-banner"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="13"/><line x1="12" y1="16.5" x2="12" y2="16.51"/></svg>This pair is currently out of stock. Join the list and we'll email you the moment it's back.</div>
+
+      <!-- Sticky purchase bar: pins to the bottom of the viewport while the details column scrolls -->
+      <div class="buy-bar">
+        <div class="buy-sum"><span class="buy-sum-label" id="sumLabel">Select a size</span><b id="sumTotal">$140</b></div>
+        <button class="btn-notify" type="button" id="notifyBtn">
+          <span class="lbl-n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0-6 6c0 4-1.5 5.5-1.5 6.5A1.5 1.5 0 0 0 6 17h12a1.5 1.5 0 0 0 1.5-1.5C19.5 14.5 18 13 18 9a6 6 0 0 0-6-6z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg>Notify Me</span>
+        </button>
+        <button class="btn-cart" type="button" id="addCart">
+          <span class="lbl lbl-add">Add to Cart
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6h15l-1.500 9h-12z"/><path d="M6 6L4 2H2"/></svg></span>
+          <span class="lbl lbl-done" aria-hidden="true">Added
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 12 10 18 20 6"/></svg></span>
+        </button>
+      </div>
+
+      <ul class="perks">
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7"/><circle cx="7" cy="17" r="1.6"/><circle cx="17" cy="17" r="1.6"/></svg>Ships in 2 days</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 1 0 3-6.2M4 4v4h4"/></svg>30-day returns</li>
+      </ul>
+      <p class="lead">A featherweight daily runner with a responsive foam midsole and a sock-like knit upper. Built for the commute, the 10k, and everything between.</p>
+
+      <div class="acc">
+        <details open><summary>Description</summary><div class="acc-body">The Nova Runner pairs a 34mm stack of responsive foam with a rocker geometry that rolls you through each stride. The engineered knit upper breathes where you run hot and holds where you need lockdown, and the bone midsole gives it a clean, off-track look.</div></details>
+        <details><summary>Features</summary><div class="acc-body"><ul class="dots"><li>Responsive dual-density foam midsole</li><li>Engineered knit upper with recycled yarns</li><li>Rubber outsole with multi-directional tread</li><li>Padded heel collar and pull tab</li><li>Weight: 8.6 oz (men's size 9)</li></ul></div></details>
+        <details><summary>Materials &amp; care</summary><div class="acc-body">Upper: 70% recycled polyester knit, 30% TPU overlays. Midsole: EVA foam. Outsole: carbon rubber. Spot clean with a soft brush and mild soap; air dry away from direct heat.</div></details>
+        <details><summary>Shipping &amp; returns</summary><div class="acc-body">Free standard shipping on orders over $100, arriving in 3 to 5 business days. Unworn pairs can be returned within 30 days for a full refund.</div></details>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="reviews" style="padding-top:var(--sp-8);">
+    <div class="section-head"><h2 class="display">Reviews</h2><p>What runners and daily wearers are saying.</p></div>
+    <div class="reviews-grid">
+      <div>
+        <div class="big-score">4.6</div>
+        <div style="margin:10px 0 4px;"><span class="stars" role="img" aria-label="Rated 4.6 out of 5"><span class="stars-base"><svg viewBox="0 0 24 24"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.400 6.100 20.500l1.200-6.500L2.500 9.400l6.600-.9z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.400 6.100 20.500l1.200-6.500L2.500 9.400l6.600-.9z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.400 6.100 20.500l1.200-6.500L2.500 9.400l6.600-.9z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.400 6.100 20.500l1.200-6.500L2.500 9.400l6.600-.9z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.400 6.100 20.500l1.200-6.500L2.500 9.400l6.600-.9z"/></svg></span><span class="stars-fill" style="width:91%"><svg viewBox="0 0 24 24"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.400 6.100 20.500l1.200-6.500L2.500 9.400l6.600-.9z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.400 6.100 20.500l1.200-6.500L2.500 9.400l6.600-.9z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.400 6.100 20.500l1.200-6.500L2.500 9.400l6.600-.9z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.400 6.100 20.500l1.200-6.500L2.500 9.400l6.600-.9z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.400 6.100 20.500l1.200-6.500L2.500 9.400l6.600-.9z"/></svg></span></span></div>
+        <div style="color:var(--text-muted);font-size:0.9rem;margin-bottom:var(--sp-6);">Based on 1,248 reviews</div>
+        <div class="bar-row"><span>5★</span><span class="bar"><i style="width:70.5%"></i></span><span class="bar-n">880</span></div><div class="bar-row"><span>4★</span><span class="bar"><i style="width:19.2%"></i></span><span class="bar-n">240</span></div><div class="bar-row"><span>3★</span><span class="bar"><i style="width:6.4%"></i></span><span class="bar-n">80</span></div><div class="bar-row"><span>2★</span><span class="bar"><i style="width:2.4%"></i></span><span class="bar-n">30</span></div><div class="bar-row"><span>1★</span><span class="bar"><i style="width:1.4%"></i></span><span class="bar-n">18</span></div>
+      </div>
+      <div class="review-list"><article class="review"><div class="review-top"><span class="stars sm" role="img" aria-label="Rated 4.6 out of 5"><span class="stars-base"><svg viewBox="0 0 24 24"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.400 6.100 20.500l1.200-6.500L2.500 9.400l6.600-.9z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.400 6.100 20.500l1.200-6.500L2.500 9.400l6.600-.9z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.400 6.100 20.500l1.200-6.500L2.500 9.400l6.600-.9z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.400 6.100 20.500l1.200-6.500L2.500 9.400l6.600-.9z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.400 6.100 20.500l1.200-6.500L2.500 9.400l6.600-.9z"/></svg></span><span class="stars-fill" style="width:100%"><svg viewBox="0 0 24 24"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.400 6.100 20.500l1.200-6.500L2.500 9.400l6.600-.9z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.400 6.100 20.500l1.200-6.500L2.500 9.400l6.600-.9z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.400 6.100 20.500l1.200-6.500L2.500 9.400l6.600-.9z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.400 6.100 20.500l1.200-6.500L2.500 9.400l6.600-.9z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.400 6.100 20.500l1.200-6.500L2.500 9.400l6.600-.9z"/></svg></span></span><span class="review-when">Marcus T. · 2 weeks ago</span></div><h4>Lightest daily pair I own</h4><p>Cushioned without feeling mushy. The cobalt is louder in person, in a good way. Ran a 10k in them the first week.</p><span class="review-meta">Bought size 10 · Verified purchase</span></article><article class="review"><div class="review-top"><span class="stars sm" role="img" aria-label="Rated 4.6 out of 5"><span class="stars-base"><svg viewBox="0 0 24 24"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.400 6.100 20.500l1.200-6.500L2.500 9.400l6.600-.9z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.400 6.100 20.500l1.200-6.500L2.500 9.400l6.600-.9z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.400 6.100 20.500l1.200-6.500L2.500 9.400l6.600-.9z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.400 6.100 20.500l1.200-6.500L2.500 9.400l6.600-.9z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.400 6.100 20.500l1.200-6.500L2.500 9.400l6.600-.9z"/></svg></span><span class="stars-fill" style="width:80%"><svg viewBox="0 0 24 24"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.400 6.100 20.500l1.200-6.500L2.500 9.400l6.600-.9z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.400 6.100 20.500l1.200-6.500L2.500 9.400l6.600-.9z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.400 6.100 20.500l1.200-6.500L2.500 9.400l6.600-.9z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.400 6.100 20.500l1.200-6.500L2.500 9.400l6.600-.9z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.400 6.100 20.500l1.200-6.500L2.500 9.400l6.600-.9z"/></svg></span></span><span class="review-when">Priya S. · 1 month ago</span></div><h4>Runs a touch narrow</h4><p>Great looks and comfort, but I sized up half a size for a wider foot. Breaks in after a couple of days.</p><span class="review-meta">Bought size 8.5 · Verified purchase</span></article><article class="review"><div class="review-top"><span class="stars sm" role="img" aria-label="Rated 4.6 out of 5"><span class="stars-base"><svg viewBox="0 0 24 24"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.400 6.100 20.500l1.200-6.500L2.500 9.400l6.600-.9z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.400 6.100 20.500l1.200-6.500L2.500 9.400l6.600-.9z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.400 6.100 20.500l1.200-6.500L2.500 9.400l6.600-.9z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.400 6.100 20.500l1.200-6.500L2.500 9.400l6.600-.9z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.400 6.100 20.500l1.200-6.500L2.500 9.400l6.600-.9z"/></svg></span><span class="stars-fill" style="width:100%"><svg viewBox="0 0 24 24"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.400 6.100 20.500l1.200-6.500L2.500 9.400l6.600-.9z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.400 6.100 20.500l1.200-6.500L2.500 9.400l6.600-.9z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.400 6.100 20.500l1.200-6.500L2.500 9.400l6.600-.9z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.400 6.100 20.500l1.200-6.500L2.500 9.400l6.600-.9z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.400 6.100 20.500l1.200-6.500L2.500 9.400l6.600-.9z"/></svg></span></span><span class="review-when">Dan K. · 1 month ago</span></div><h4>Finally a runner I can wear all day</h4><p>Wore them through a 12 hour travel day. Zero hot spots. The bone midsole is holding up clean.</p><span class="review-meta">Bought size 11 · Verified purchase</span></article></div>
+    </div>
+  </section>
+  <!-- Demo only: lets you preview the out-of-stock state -->
+  <a href="#" class="demo-toggle" id="demoToggle">Preview: out of stock</a>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-top">
+      <div>
+        <a href="kicks-lab.html" class="logo"><span class="dot"></span>KICKS LAB</a>
+        <p style="color:var(--text-muted); font-size:0.9rem; margin-top:14px; max-width:32ch;">Sneakers and streetwear, released in small runs, on our terms.</p>
+        <div class="newsletter">
+          <input type="email" placeholder="Your email" aria-label="Email address">
+          <button type="button">Join</button>
+        </div>
+      </div>
+      <div>
+        <h5>Quick Links</h5>
+        <ul>
+          <li><a href="#">Men</a></li>
+          <li><a href="#">Women</a></li>
+          <li><a href="#drop">New Drops</a></li>
+          <li><a href="#">Sale</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Help</h5>
+        <ul>
+          <li><a href="#">Shipping</a></li>
+          <li><a href="#">Returns</a></li>
+          <li><a href="#">Size guide</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Follow</h5>
+        <div class="socials">
+          <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg></a>
+          <a href="#" aria-label="X"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="4" x2="20" y2="20"/><line x1="20" y1="4" x2="4" y2="20"/></svg></a>
+          <a href="#" aria-label="TikTok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 4v9.5a3.5 3.5 0 1 1-3-3.46"/><path d="M14 4c0 2.5 2 4.5 4.5 4.5"/></svg></a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Kicks Lab. All rights reserved.</span>
+      <span>Oakland · New York · Tokyo</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const nav = document.getElementById('siteNav');
+  const onScroll = () => nav.classList.toggle('scrolled', window.scrollY > 24);
+  window.addEventListener('scroll', onScroll, { passive:true }); onScroll();
+
+  // Gallery: thumbnails swap the main image
+  const thumbs = [...document.querySelectorAll('.thumb')];
+  const mainImg = document.getElementById('mainImg');
+  const names = ['Side view', 'Top view', 'Outsole', 'Heel detail'];
+  thumbs.forEach(t => t.addEventListener('click', () => {
+    const i = +t.dataset.i;
+    thumbs.forEach(x => { x.classList.toggle('active', x === t); x.setAttribute('aria-current', x === t); });
+    mainImg.innerHTML = t.innerHTML;
+    const gm = document.getElementById('galleryMain');
+    gm.classList.remove('swap'); void gm.offsetWidth; gm.classList.add('swap');
+    document.getElementById('galleryCount').textContent = names[i] + ' · ' + (i+1) + ' / 4';
+  }));
+
+  // Colorway + size selection
+  document.querySelectorAll('.swatch').forEach(b => b.addEventListener('click', () => {
+    document.querySelectorAll('.swatch').forEach(x => x.setAttribute('aria-pressed', x === b));
+    document.getElementById('colorName').textContent = b.dataset.name;
+  }));
+  // Size, quantity, stock
+  const PRICE = 140, MAX_QTY = 10;
+  let size = null, stock = 0, qty = 1;
+  const $ = id => document.getElementById(id);
+  function render(){
+    $('qtyVal').textContent = qty;
+    $('qtyMinus').disabled = qty <= 1;
+    $('qtyPlus').disabled = !size || qty >= Math.min(stock, MAX_QTY);
+    $('sizeName').textContent = size ? 'US ' + size : 'Select a size';
+    const st = $('stock');
+    if (!size){ st.dataset.state = 'none'; $('stockText').textContent = 'Select a size to see availability'; }
+    else if (stock <= 3){ st.dataset.state = 'low'; $('stockText').textContent = 'Only ' + stock + ' left in this size!'; }
+    else { st.dataset.state = 'ok'; $('stockText').textContent = 'In stock, ships in 2 days'; }
+    $('sumLabel').textContent = size ? 'Size ' + size + ' · Qty ' + qty : 'Select a size';
+    $('sumTotal').textContent = '$' + (PRICE * qty);
+  }
+  document.querySelectorAll('.size:not(:disabled)').forEach(b => b.addEventListener('click', () => {
+    size = b.dataset.size; stock = +b.dataset.stock;
+    qty = Math.min(qty, stock);
+    document.querySelectorAll('.size').forEach(x => x.setAttribute('aria-pressed', x === b));
+    $('sizeError').classList.remove('show');
+    render();
+  }));
+  $('qtyMinus').addEventListener('click', () => { qty = Math.max(1, qty - 1); render(); });
+  $('qtyPlus').addEventListener('click', () => { qty = Math.min(Math.min(stock, MAX_QTY), qty + 1); render(); });
+  $('sizeGuide').addEventListener('click', e => e.preventDefault()); // TODO: open size guide modal
+
+  // Shared cart storage (localStorage 'kl-cart'), same key used by the Shop and Cart pages
+  const CART_KEY = 'kl-cart';
+  const NOVA_SVG = document.getElementById('mainImg').innerHTML; // side view, used as the cart-line image
+  function readCart(){ try { const d = JSON.parse(localStorage.getItem(CART_KEY)); return d && Array.isArray(d.items) ? d : { items: [], promo: null }; } catch(e){ return { items: [], promo: null }; } }
+  function addToCart(sizeVal, colorName, qtyVal){
+    const data = readCart();
+    const id = 'nova-runner';
+    const ex = data.items.find(x => x.id === id && x.size === sizeVal);
+    if (ex) ex.qty = Math.min(10, ex.qty + qtyVal);
+    else data.items.push({ id, brand:'Kicks Lab', name:'Nova Runner', color:colorName, size:sizeVal, price:PRICE, qty:qtyVal, svg:NOVA_SVG });
+    localStorage.setItem(CART_KEY, JSON.stringify(data));
+    return data.items.reduce((a,it) => a + it.qty, 0);
+  }
+
+  // Add to Cart: badge bump + brief "Added ✓" state
+  let resetTimer;
+  const badge = $('cartBadge'), btn = $('addCart');
+  badge.textContent = readCart().items.reduce((a,it) => a + it.qty, 0);
+
+  // Shared favorites storage (localStorage 'kl-favorites'), same key used by the Shop page
+  const FAV_KEY = 'kl-favorites';
+  function readFavs(){ try { const d = JSON.parse(localStorage.getItem(FAV_KEY)); return Array.isArray(d) ? d : []; } catch(e){ return []; } }
+  function writeFavs(items){ try { localStorage.setItem(FAV_KEY, JSON.stringify(items)); } catch(e){} }
+  function refreshFavBadge(){
+    const fb = $('favBadge'), c = readFavs().length;
+    if (fb) { fb.hidden = c === 0; fb.textContent = c; }
+  }
+  window.toggleFav = function(btn){
+    let favs = readFavs();
+    const i = favs.findIndex(x => x.id === 'nova-runner');
+    if (i > -1) { favs.splice(i,1); btn.classList.remove('saved'); btn.setAttribute('aria-pressed','false'); }
+    else { favs.push({ id:'nova-runner', brand:'Kicks Lab', name:'Nova Runner', color: $('colorName').textContent, price: PRICE, svg: NOVA_SVG }); btn.classList.add('saved'); btn.setAttribute('aria-pressed','true'); }
+    writeFavs(favs);
+    refreshFavBadge();
+  };
+  if (readFavs().some(x => x.id === 'nova-runner')) {
+    const hb = document.querySelector('.save-btn[aria-label="Save Nova Runner"]');
+    if (hb) { hb.classList.add('saved'); hb.setAttribute('aria-pressed','true'); }
+  }
+  refreshFavBadge();
+  btn.addEventListener('click', () => {
+    if (!size){
+      const err = $('sizeError'); err.classList.remove('show'); void err.offsetWidth; err.classList.add('show');
+      $('sizes').scrollIntoView({ behavior:'smooth', block:'center' });
+      return;
+    }
+    const total = addToCart(size, $('colorName').textContent, qty);
+    badge.textContent = total;
+    badge.classList.remove('bump'); void badge.offsetWidth; badge.classList.add('bump');
+    setTimeout(() => badge.classList.remove('bump'), 300);
+    btn.classList.add('added');
+    btn.setAttribute('aria-label', 'Added to cart');
+    clearTimeout(resetTimer);
+    resetTimer = setTimeout(() => { btn.classList.remove('added'); btn.removeAttribute('aria-label'); }, 1800);
+  });
+  render();
+
+  // Out-of-stock state (demo): toggled by ?oos=1 in the URL, or the floating preview link
+  function setOOS(on){
+    document.body.classList.toggle('oos', on);
+    $('demoToggle').textContent = on ? 'Preview: back in stock' : 'Preview: out of stock';
+  }
+  setOOS(new URLSearchParams(location.search).get('oos') === '1');
+  $('demoToggle').addEventListener('click', e => {
+    e.preventDefault();
+    const on = !document.body.classList.contains('oos');
+    setOOS(on);
+    const url = new URL(location.href); on ? url.searchParams.set('oos','1') : url.searchParams.delete('oos');
+    history.replaceState(null, '', url);
+  });
+  const bellSVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0-6 6c0 4-1.5 5.5-1.5 6.5A1.5 1.5 0 0 0 6 17h12a1.5 1.5 0 0 0 1.5-1.5C19.5 14.5 18 13 18 9a6 6 0 0 0-6-6z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg>';
+  $('notifyBtn').addEventListener('click', () => {
+    const b = $('notifyBtn');
+    b.classList.add('sent'); b.querySelector('.lbl-n').textContent = "You're on the list \u2713";
+    setTimeout(() => { b.classList.remove('sent'); b.querySelector('.lbl-n').innerHTML = bellSVG + 'Notify Me'; }, 2200);
+  });
+</script>
+</body>
+</html>
